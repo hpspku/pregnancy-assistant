@@ -1,2102 +1,1078 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>怀孕助手 - 准妈妈的贴心伙伴</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #FF6B9D;
-            --primary-light: #FF8FB1;
-            --secondary: #FFB6C1;
-            --accent: #FFA07A;
-            --bg: #FFF5F7;
-            --card: #FFFFFF;
-            --text: #2D3436;
-            --text-secondary: #636E72;
-            --success: #00B894;
-            --warning: #FDCB6E;
-            --shadow: rgba(255, 107, 157, 0.15);
-            --shadow-lg: 0 8px 32px rgba(255, 107, 157, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* App Container */
-        .app {
-            max-width: 430px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: var(--bg);
-            position: relative;
-            padding-bottom: 80px;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            padding: 20px;
-            padding-top: 50px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -10%;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .greeting {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        /* Setup Form */
-        .setup-container {
-            padding: 20px;
-            margin-top: -30px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .setup-card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .setup-card h2 {
-            font-size: 18px;
-            color: var(--text);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .setup-card h2 span {
-            font-size: 24px;
-        }
-
-        .setup-card p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-
-        .date-input-group {
-            margin-bottom: 20px;
-        }
-
-        .date-input-group label {
-            display: block;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .date-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #F0F0F0;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            background: #FAFAFA;
-        }
-
-        .date-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Main Content */
-        .main-content {
-            display: none;
-            padding: 20px;
-        }
-
-        .main-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Week Selector */
-        .week-selector {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding: 4px 0;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .week-selector::-webkit-scrollbar {
-            display: none;
-        }
-
-        .week-btn {
-            flex-shrink: 0;
-            padding: 10px 16px;
-            background: white;
-            border: 2px solid #F0F0F0;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .week-btn.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-color: var(--primary);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .week-btn:hover:not(.active) {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Progress Ring */
-        .progress-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .progress-ring-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-        }
-
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-bg {
-            fill: none;
-            stroke: #FFE4E9;
-            stroke-width: 10;
-        }
-
-        .progress-ring-fill {
-            fill: none;
-            stroke: url(#progressGradient);
-            stroke-width: 10;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease;
-        }
-
-        .progress-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .progress-week {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary);
-            line-height: 1;
-        }
-
-        .progress-week-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        .progress-info {
-            flex: 1;
-        }
-
-        .progress-info h3 {
-            font-size: 16px;
-            color: var(--text);
-            margin-bottom: 12px;
-        }
-
-        .progress-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-item {
-            background: white;
-            padding: 12px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .stat-value.highlight {
-            color: var(--primary);
-        }
-
-        /* Baby Size Card */
-        .baby-size-card {
-            background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .baby-size-card::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 107, 157, 0.1);
-            border-radius: 50%;
-        }
-
-        .baby-emoji {
-            font-size: 64px;
-            margin-bottom: 12px;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .baby-size-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .baby-size-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Section Title */
-        .section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .section-title h2 {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title h2 span {
-            font-size: 20px;
-        }
-
-        .section-title .more {
-            font-size: 13px;
-            color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* Info Cards */
-        .info-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-
-        .info-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-card h3 span {
-            font-size: 18px;
-        }
-
-        .info-list {
-            list-style: none;
-        }
-
-        .info-list li {
-            padding: 10px 0;
-            font-size: 14px;
-            color: var(--text);
-            line-height: 1.6;
-            border-bottom: 1px solid #F5F5F5;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .info-list li::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 8px;
-        }
-
-        /* Tab Bar */
-        .tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 430px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            padding-bottom: max(10px, env(safe-area-inset-bottom));
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-            border-radius: 20px 20px 0 0;
-            z-index: 100;
-        }
-
-        .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 12px;
-        }
-
-        .tab-item.active {
-            transform: scale(1.05);
-        }
-
-        .tab-icon {
-            font-size: 22px;
-            transition: transform 0.3s ease;
-        }
-
-        .tab-item.active .tab-icon {
-            transform: scale(1.15);
-        }
-
-        .tab-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .tab-item.active .tab-label {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Tracker Page */
-        .tracker-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            border-radius: 24px;
-            padding: 24px;
-            color: white;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tracker-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -30%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .tracker-date {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 4px;
-        }
-
-        .tracker-edd {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .tracker-progress-bar {
-            height: 8px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .tracker-progress-fill {
-            height: 100%;
-            background: white;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .tracker-progress-text {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        /* Todo List */
-        .todo-filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .todo-item {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .todo-item.done {
-            opacity: 0.6;
-        }
-
-        .todo-item.done .todo-text {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
-        .todo-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #E0E0E0;
-            border-radius: 50%;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            margin-top: 2px;
-        }
-
-        .todo-item.done .todo-checkbox {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-
-        .todo-content {
-            flex: 1;
-        }
-
-        .todo-text {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-
-        .todo-meta {
-            display: flex;
-            gap: 8px;
-        }
-
-        .todo-tag {
-            padding: 4px 10px;
-            background: #FFF0F3;
-            color: var(--primary);
-            font-size: 11px;
-            border-radius: 10px;
-            font-weight: 500;
-        }
-
-        .todo-tag.early { background: #E8F5E9; color: #4CAF50; }
-        .todo-tag.mid { background: #FFF3E0; color: #FF9800; }
-        .todo-tag.late { background: #E3F2FD; color: #2196F3; }
-
-        /* Health Records */
-        .health-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-
-        .health-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .health-card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .health-card-title span {
-            font-size: 22px;
-        }
-
-        .add-record-btn {
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .add-record-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .health-records-list {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .record-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #F5F5F5;
-        }
-
-        .record-item:last-child {
-            border-bottom: none;
-        }
-
-        .record-date {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .record-value {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .record-value.good { color: var(--success); }
-        .record-value.warning { color: var(--warning); }
-        .record-value.danger { color: #E74C3C; }
-
-        /* Chart Placeholder */
-        .weight-chart {
-            height: 150px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-bottom: 1px solid #F0F0F0;
-        }
-
-        .chart-bar {
-            width: 30px;
-            background: linear-gradient(to top, var(--primary), var(--primary-light));
-            border-radius: 6px 6px 0 0;
-            transition: height 0.5s ease;
-        }
-
-        .chart-labels {
-            display: flex;
-            justify-content: space-around;
-            padding-top: 8px;
-        }
-
-        .chart-label {
-            font-size: 10px;
-            color: var(--text-secondary);
-            width: 30px;
-            text-align: center;
-        }
-
-        /* Tips Page */
-        .tip-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tip-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-        }
-
-        .tip-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #FFF0F3;
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 500;
-            border-radius: 20px;
-            margin-bottom: 12px;
-        }
-
-        .tip-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .tip-content {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .tip-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid #F5F5F5;
-        }
-
-        .tip-date {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .tip-like {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-        }
-
-        .tip-like.liked {
-            color: var(--primary);
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background: white;
-            width: 100%;
-            max-width: 430px;
-            border-radius: 24px 24px 0 0;
-            padding: 24px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            background: #F5F5F5;
-            border: none;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #F0F0F0;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: inherit;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-btn.cancel {
-            background: #F5F5F5;
-            color: var(--text-secondary);
-        }
-
-        .modal-btn.confirm {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Celebration Animation */
-        .celebration {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 60px;
-            z-index: 2000;
-            animation: celebrate 1s ease forwards;
-            pointer-events: none;
-        }
-
-        @keyframes celebrate {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-            100% { opacity: 0; transform: translate(-50%, -100%) scale(1); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-text {
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-
-        /* Responsive */
-        @media (max-width: 430px) {
-            .app {
-                max-width: 100%;
-            }
-            .tab-bar {
-                max-width: 100%;
-            }
-        }
-
-        /* Hide setup when has data */
-        .setup-container.hidden {
-            display: none;
-        }
-
-        /* Week detail modal */
-        .week-detail-modal {
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .week-detail-content {
-            padding-bottom: 20px;
-        }
-
-        .week-detail-header {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%);
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-
-        .week-detail-emoji {
-            font-size: 80px;
-            margin-bottom: 12px;
-        }
-
-        .week-detail-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .week-detail-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<title>怀孕助手 - 准妈妈的贴心伙伴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B9D;
+  --primary-light: #FF8FB1;
+  --primary-dark: #E8558A;
+  --secondary: #FFB6C1;
+  --accent: #FFA07A;
+  --bg: #FFF5F7;
+  --card: #FFFFFF;
+  --text: #2D3436;
+  --text-secondary: #636E72;
+  --text-light: #B2BEC3;
+  --success: #00B894;
+  --warning: #FDCB6E;
+  --danger: #E74C3C;
+  --shadow: rgba(255, 107, 157, 0.15);
+  --shadow-lg: 0 8px 32px rgba(255, 107, 157, 0.2);
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --tab-height: 68px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  background: var(--bg);
+  position: relative;
+  padding-bottom: calc(var(--tab-height) + var(--safe-bottom) + 8px);
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, var(--primary) 0%, #FF6B9D 30%, #FF8FB1 60%, var(--accent) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  padding: 20px;
+  padding-top: calc(44px + var(--safe-top));
+  padding-bottom: 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.header::before {
+  content: ''; position: absolute; top: -60%; right: -20%;
+  width: 280px; height: 280px;
+  background: rgba(255,255,255,0.08); border-radius: 50%;
+  animation: floatBubble 6s ease-in-out infinite;
+}
+.header::after {
+  content: ''; position: absolute; bottom: -40%; left: -10%;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,0.06); border-radius: 50%;
+  animation: floatBubble 8s ease-in-out infinite reverse;
+}
+@keyframes floatBubble {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+.header-content { position: relative; z-index: 1; }
+.greeting { font-size: 15px; opacity: 0.92; margin-bottom: 6px; font-weight: 300; }
+.header h1 { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
+.header h1::after {
+  content: ' 🌸';
+  font-size: 22px;
+}
+
+/* ===== SETUP ===== */
+.setup-container { padding: 0 20px; margin-top: -20px; position: relative; z-index: 2; animation: slideUp 0.5s ease; }
+.setup-card { background: var(--card); border-radius: var(--radius-lg); padding: 28px 24px; box-shadow: var(--shadow-lg); }
+.setup-card h2 { font-size: 20px; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+.setup-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+.date-input-group { margin-bottom: 20px; }
+.date-input-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
+.date-input {
+  width: 100%; padding: 16px; border: 2px solid #F0F0F0; border-radius: 12px;
+  font-size: 16px; font-family: inherit; transition: all 0.3s ease; background: #FAFAFA;
+  -webkit-appearance: none; appearance: none;
+}
+.date-input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(255,107,157,0.12); }
+
+.btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(255,107,157,0.35);
+}
+.btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(255,107,157,0.25); }
+
+/* ===== MAIN CONTENT ===== */
+.main-content { display: none; padding: 0; }
+.main-content.active { display: block; }
+.page { display: none; padding: 20px; animation: pageIn 0.35s ease; }
+.page.active { display: block; }
+@keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== HOME ===== */
+.baby-size-card {
+  background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%);
+  border-radius: var(--radius-lg); padding: 28px; margin-bottom: 20px;
+  text-align: center; position: relative; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(255,107,157,0.1);
+}
+.baby-size-card::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 140px; height: 140px;
+  background: rgba(255,107,157,0.08); border-radius: 50%;
+}
+.baby-emoji { font-size: 72px; margin-bottom: 12px; animation: floatBaby 2.5s ease-in-out infinite; display: block; }
+@keyframes floatBaby { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.baby-size-text { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.baby-size-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+.progress-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.progress-ring-container { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
+.progress-ring { transform: rotate(-90deg); }
+.progress-ring-bg { fill: none; stroke: #FFE4E9; stroke-width: 10; }
+.progress-ring-fill { fill: none; stroke: url(#progressGradient); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); filter: drop-shadow(0 2px 4px rgba(255,107,157,0.3)); }
+.progress-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+.progress-week { font-size: 28px; font-weight: 700; color: var(--primary); line-height: 1; }
+.progress-week-label { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+.progress-info { flex: 1; }
+.progress-info h3 { font-size: 16px; color: var(--text); margin-bottom: 14px; font-weight: 600; }
+.progress-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-item { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; }
+.stat-value { font-size: 15px; font-weight: 600; color: var(--text); }
+.stat-value.highlight { color: var(--primary); }
+
+.section-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.section-title .more { font-size: 13px; color: var(--primary); cursor: pointer; font-weight: 500; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
+.section-title .more:active { background: rgba(255,107,157,0.1); }
+
+.info-card { background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.info-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.info-list { list-style: none; }
+.info-list li { padding: 10px 0; font-size: 14px; color: var(--text); line-height: 1.6; border-bottom: 1px solid #F5F5F5; display: flex; align-items: flex-start; gap: 10px; }
+.info-list li:last-child { border-bottom: none; }
+.info-list li::before { content: ''; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; flex-shrink: 0; margin-top: 9px; }
+
+/* ===== TAB BAR ===== */
+.tab-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; background: rgba(255,255,255,0.96);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  display: flex; justify-content: space-around;
+  padding: 6px 0 calc(6px + var(--safe-bottom));
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.06), 0 -4px 20px rgba(0,0,0,0.06);
+  z-index: 100;
+}
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 14px; cursor: pointer; transition: all 0.2s ease;
+  border-radius: 12px; position: relative;
+  -webkit-touch-callout: none; user-select: none;
+}
+.tab-item:active { opacity: 0.7; }
+.tab-icon { font-size: 22px; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+.tab-item.active .tab-icon { transform: scale(1.2); }
+.tab-label { font-size: 10px; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
+.tab-item.active .tab-label { color: var(--primary); font-weight: 600; }
+.tab-item.active::after {
+  content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 3px; background: var(--primary); border-radius: 0 0 3px 3px;
+}
+
+/* ===== TRACKER ===== */
+.tracker-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: var(--radius-lg); padding: 24px; color: white; margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.tracker-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+.tracker-date { font-size: 14px; opacity: 0.9; margin-bottom: 4px; }
+.tracker-edd { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+.tracker-progress-bar { height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.tracker-progress-fill { height: 100%; background: white; border-radius: 4px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+.tracker-progress-text { font-size: 12px; opacity: 0.9; }
+
+.week-selector {
+  display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto;
+  padding: 4px 0; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
+}
+.week-selector::-webkit-scrollbar { display: none; }
+.week-btn {
+  flex-shrink: 0; padding: 10px 18px; background: white; border: 2px solid #F0F0F0;
+  border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.25s ease; white-space: nowrap;
+  scroll-snap-align: center;
+}
+.week-btn.active { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-color: transparent; color: white; transform: scale(1.06); box-shadow: 0 4px 12px rgba(255,107,157,0.3); }
+.week-btn:active:not(.active) { transform: scale(0.95); }
+
+/* ===== TODO ===== */
+.todo-filters { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.todo-filters::-webkit-scrollbar { display: none; }
+.filter-btn {
+  padding: 8px 18px; background: white; border: 1.5px solid #F0F0F0; border-radius: 20px;
+  font-size: 13px; color: var(--text-secondary); font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+}
+.filter-btn.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 3px 10px rgba(255,107,157,0.25); }
+.filter-btn:active { transform: scale(0.95); }
+.todo-item {
+  background: white; border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.25s ease; cursor: pointer;
+}
+.todo-item:active { transform: scale(0.98); }
+.todo-item.done { opacity: 0.5; }
+.todo-item.done .todo-text { text-decoration: line-through; color: var(--text-secondary); }
+.todo-checkbox {
+  width: 24px; height: 24px; border: 2px solid #E0E0E0; border-radius: 50%;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); margin-top: 2px;
+}
+.todo-item.done .todo-checkbox { background: var(--success); border-color: var(--success); color: white; transform: scale(1.1); }
+.todo-content { flex: 1; }
+.todo-text { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+.todo-meta { display: flex; gap: 8px; }
+.todo-tag { padding: 3px 10px; background: #FFF0F3; color: var(--primary); font-size: 11px; border-radius: 10px; font-weight: 500; }
+.todo-tag.early { background: #E8F5E9; color: #4CAF50; }
+.todo-tag.mid { background: #FFF3E0; color: #FF9800; }
+.todo-tag.late { background: #E3F2FD; color: #2196F3; }
+
+/* ===== HEALTH ===== */
+.health-card { background: white; border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.health-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.health-card-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; }
+.health-card-title span { font-size: 22px; }
+.add-record-btn {
+  width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s ease; box-shadow: 0 3px 10px rgba(255,107,157,0.25);
+}
+.add-record-btn:active { transform: scale(0.9); }
+.health-records-list { max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.record-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F5F5F5; }
+.record-item:last-child { border-bottom: none; }
+.record-date { font-size: 13px; color: var(--text-secondary); }
+.record-value { font-size: 16px; font-weight: 600; }
+.record-value.good { color: var(--success); }
+.record-value.warning { color: #F39C12; }
+.record-value.danger { color: var(--danger); }
+
+/* Weight Chart */
+.weight-chart { height: 160px; display: flex; align-items: flex-end; justify-content: space-around; padding: 10px 0 0; border-bottom: 1px solid #F0F0F0; position: relative; }
+.weight-chart::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #E8E8E8; }
+.chart-bar {
+  width: 28px; min-height: 6px;
+  background: linear-gradient(to top, var(--primary), var(--primary-light));
+  border-radius: 5px 5px 0 0; transition: height 0.6s cubic-bezier(0.4,0,0.2,1);
+  animation: barGrow 0.6s ease-out backwards;
+  position: relative; border: 1px solid rgba(255,255,255,0.3);
+}
+.chart-bar:hover { opacity: 0.85; }
+@keyframes barGrow { from { height: 6px; } }
+.chart-labels { display: flex; justify-content: space-around; padding: 8px 0 4px; }
+.chart-label { font-size: 10px; color: var(--text-secondary); width: 28px; text-align: center; }
+
+/* ===== TIPS ===== */
+.tip-card { background: white; border-radius: var(--radius-lg); padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s ease; }
+.tip-card:active { transform: scale(0.98); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.tip-category { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFF0F3; color: var(--primary); font-size: 12px; font-weight: 500; border-radius: 20px; margin-bottom: 10px; }
+.tip-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+.tip-content { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.tip-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid #F5F5F5; }
+.tip-date { font-size: 12px; color: var(--text-secondary); }
+.tip-like { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); transition: all 0.2s ease; padding: 4px 8px; border-radius: 8px; }
+.tip-like:active { background: rgba(255,107,157,0.08); }
+.tip-like.liked { color: #E74C3C; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; top: calc(60px + var(--safe-top)); left: 50%; transform: translateX(-50%) translateY(-80px);
+  z-index: 3000; padding: 12px 24px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 500; color: white;
+  background: rgba(45,52,54,0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: none; white-space: nowrap; max-width: 85%;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== CONFETTI ===== */
+.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000; overflow: hidden; }
+.confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal {
+  background: white; width: 100%; max-width: 430px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 24px; padding-bottom: calc(24px + var(--safe-bottom));
+  transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.modal-overlay.active .modal { transform: translateY(0); }
+.modal-handle { width: 36px; height: 4px; background: #DDD; border-radius: 2px; margin: 0 auto 16px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.modal-title { font-size: 18px; font-weight: 600; }
+.modal-close { width: 32px; height: 32px; background: #F5F5F5; border: none; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.modal-close:active { background: #E0E0E0; }
+.modal-input {
+  width: 100%; padding: 14px 16px; border: 2px solid #F0F0F0; border-radius: 12px;
+  font-size: 16px; font-family: inherit; margin-bottom: 16px; transition: all 0.25s ease;
+  background: #FAFAFA; -webkit-appearance: none; appearance: none;
+}
+.modal-input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(255,107,157,0.1); }
+.modal-buttons { display: flex; gap: 12px; }
+.modal-btn {
+  flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s ease; font-family: inherit;
+}
+.modal-btn:active { transform: scale(0.97); }
+.modal-btn.cancel { background: #F5F5F5; color: var(--text-secondary); }
+.modal-btn.confirm { background: var(--primary); color: white; box-shadow: 0 3px 12px rgba(255,107,157,0.3); }
+
+.week-detail-modal { max-height: 85vh; overflow-y: auto; }
+.week-detail-content { padding-bottom: 20px; }
+.week-detail-header { text-align: center; padding: 24px; background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%); border-radius: var(--radius); margin-bottom: 16px; }
+.week-detail-emoji { font-size: 80px; margin-bottom: 12px; display: block; }
+.week-detail-title { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+.week-detail-subtitle { font-size: 14px; color: var(--text-secondary); }
+
+/* ===== EMPTY STATE ===== */
+.empty-state { text-align: center; padding: 36px 20px; }
+.empty-icon { font-size: 56px; margin-bottom: 12px; opacity: 0.5; }
+.empty-text { font-size: 14px; color: var(--text-secondary); }
+
+/* ===== RESPONSIVE ADAPTATION ===== */
+@media (max-width: 430px) {
+  .app { max-width: 100%; }
+  .tab-bar { max-width: 100%; }
+}
+@media (min-width: 431px) {
+  .app { border-left: 1px solid rgba(0,0,0,0.06); border-right: 1px solid rgba(0,0,0,0.06); min-height: 100vh; }
+  body { background: #F2F2F7; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-    <div class="app">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-content">
-                <p class="greeting" id="greeting">美好的一天</p>
-                <h1>怀孕助手</h1>
-            </div>
+
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <p class="greeting" id="greeting">🌸 美好的一天</p>
+      <h1>怀孕助手</h1>
+    </div>
+  </div>
+
+  <!-- Setup -->
+  <div class="setup-container" id="setupContainer">
+    <div class="setup-card">
+      <h2><span>🌸</span> 开启您的孕期之旅</h2>
+      <p>请输入末次月经的第一天日期，我会帮您计算预产期和孕期进度，全程陪伴您的孕育之路。</p>
+      <div class="date-input-group">
+        <label>📅 末次月经日期</label>
+        <input type="date" class="date-input" id="lastPeriodDate">
+      </div>
+      <button class="btn" id="startBtn">✨ 开始使用</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <!-- 1. HOME -->
+    <div class="page active" id="homePage">
+      <div class="baby-size-card">
+        <span class="baby-emoji" id="babyEmoji">🍋</span>
+        <div class="baby-size-text" id="babySizeText">本周像一颗柠檬</div>
+        <div class="baby-size-desc" id="babySizeDesc">胎儿身长约3-4厘米，体重约4-5克，开始有心跳啦</div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-ring-container">
+          <svg class="progress-ring" width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#FF6B9D"/>
+                <stop offset="100%" stop-color="#FFA07A"/>
+              </linearGradient>
+            </defs>
+            <circle class="progress-ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="50" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
+          </svg>
+          <div class="progress-center">
+            <div class="progress-week" id="currentWeek">第12周</div>
+            <div class="progress-week-label">孕早期</div>
+          </div>
         </div>
-
-        <!-- Setup -->
-        <div class="setup-container" id="setupContainer">
-            <div class="setup-card">
-                <h2><span>🌸</span> 开启您的孕期之旅</h2>
-                <p>请输入末次月经的第一天日期，我会帮您计算预产期和孕期进度</p>
-                <div class="date-input-group">
-                    <label>末次月经日期</label>
-                    <input type="date" class="date-input" id="lastPeriodDate">
-                </div>
-                <button class="btn" id="startBtn">开始使用</button>
-            </div>
+        <div class="progress-info">
+          <h3>孕期进度</h3>
+          <div class="progress-stats">
+            <div class="stat-item"><div class="stat-label">预产期</div><div class="stat-value" id="eddDate">2025-10-15</div></div>
+            <div class="stat-item"><div class="stat-label">剩余天数</div><div class="stat-value highlight" id="daysLeft">196天</div></div>
+          </div>
         </div>
+      </div>
 
-        <!-- Main Content -->
-        <div class="main-content" id="mainContent">
-            <!-- Home Page -->
-            <div class="page active" id="homePage">
-                <div class="baby-size-card">
-                    <div class="baby-emoji" id="babyEmoji">🍋</div>
-                    <div class="baby-size-text" id="babySizeText">本周像一颗柠檬</div>
-                    <div class="baby-size-desc" id="babySizeDesc">胎儿身长约3-4厘米，体重约4-5克，开始有心跳啦</div>
-                </div>
-
-                <div class="progress-section">
-                    <div class="progress-ring-container">
-                        <svg class="progress-ring" width="120" height="120">
-                            <defs>
-                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" style="stop-color:#FF6B9D"/>
-                                    <stop offset="100%" style="stop-color:#FFA07A"/>
-                                </linearGradient>
-                            </defs>
-                            <circle class="progress-ring-bg" cx="60" cy="60" r="50"/>
-                            <circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="50"
-                                stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
-                        </svg>
-                        <div class="progress-center">
-                            <div class="progress-week" id="currentWeek">第12周</div>
-                            <div class="progress-week-label">孕早期</div>
-                        </div>
-                    </div>
-                    <div class="progress-info">
-                        <h3>孕期进度</h3>
-                        <div class="progress-stats">
-                            <div class="stat-item">
-                                <div class="stat-label">预产期</div>
-                                <div class="stat-value" id="eddDate">2025-10-15</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-label">剩余天数</div>
-                                <div class="stat-value highlight" id="daysLeft">196天</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-title">
-                    <h2><span>📋</span> 本周重点</h2>
-                    <span class="more" onclick="switchTab(1)">查看全部</span>
-                </div>
-
-                <div class="info-card">
-                    <h3><span>👶</span> 胎儿发育</h3>
-                    <ul class="info-list" id="babyDevList">
-                        <li>宝宝正在快速成长，手指和脚趾已经分开</li>
-                        <li>开始有了吞咽和打哈欠的动作</li>
-                        <li>神经系统继续发育，肌肉开始工作</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
-                    <h3><span>💕</span> 妈妈变化</h3>
-                    <ul class="info-list" id="momChangesList">
-                        <li>孕吐可能会逐渐减轻</li>
-                        <li>乳房可能继续增大，变得更加敏感</li>
-                        <li>疲劳感可能仍然存在，注意多休息</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
-                    <h3><span>⚠️</span> 本周提醒</h3>
-                    <ul class="info-list">
-                        <li>继续保持叶酸补充</li>
-                        <li>避免高温环境（如泡温泉、桑拿）</li>
-                        <li>如果有阴道出血或严重腹痛，请及时就医</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Tracker Page -->
-            <div class="page" id="trackerPage">
-                <div class="tracker-header">
-                    <div class="tracker-date" id="trackerDate">今天是2025年4月1日</div>
-                    <div class="tracker-edd" id="trackerEdd">预产期：2025年10月18日</div>
-                    <div class="tracker-progress-bar">
-                        <div class="tracker-progress-fill" id="trackerProgressFill" style="width: 30%"></div>
-                    </div>
-                    <div class="tracker-progress-text" id="trackerProgressText">孕期已完成 30%</div>
-                </div>
-
-                <div class="section-title">
-                    <h2><span>📅</span> 孕期日历</h2>
-                </div>
-
-                <div class="week-selector" id="weekSelector">
-                    <!-- Weeks will be generated by JS -->
-                </div>
-
-                <div id="weekDetail">
-                    <!-- Week detail will be shown here -->
-                </div>
-            </div>
-
-            <!-- Todo Page -->
-            <div class="page" id="todoPage">
-                <div class="section-title">
-                    <h2><span>✅</span> 孕期待办</h2>
-                </div>
-
-                <div class="todo-filters">
-                    <button class="filter-btn active" data-filter="all">全部</button>
-                    <button class="filter-btn" data-filter="early">孕早期</button>
-                    <button class="filter-btn" data-filter="mid">孕中期</button>
-                    <button class="filter-btn" data-filter="late">孕晚期</button>
-                </div>
-
-                <div id="todoList">
-                    <!-- Todos will be generated by JS -->
-                </div>
-
-                <button class="btn" style="margin-top: 20px;" onclick="showAddTodoModal()">
-                    + 添加待办事项
-                </button>
-            </div>
-
-            <!-- Health Page -->
-            <div class="page" id="healthPage">
-                <div class="section-title">
-                    <h2><span>💪</span> 健康记录</h2>
-                </div>
-
-                <div class="health-card">
-                    <div class="health-card-header">
-                        <div class="health-card-title">
-                            <span>⚖️</span> 体重记录
-                        </div>
-                        <button class="add-record-btn" onclick="showWeightModal()">+</button>
-                    </div>
-                    <div class="weight-chart" id="weightChart">
-                        <!-- Chart bars will be generated by JS -->
-                    </div>
-                    <div class="chart-labels" id="weightChartLabels">
-                        <!-- Labels will be generated by JS -->
-                    </div>
-                    <div class="health-records-list" id="weightRecords">
-                        <div class="empty-state">
-                            <div class="empty-icon">📊</div>
-                            <div class="empty-text">点击 + 添加第一条体重记录</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="health-card">
-                    <div class="health-card-header">
-                        <div class="health-card-title">
-                            <span>❤️</span> 血压记录
-                        </div>
-                        <button class="add-record-btn" onclick="showBpModal()">+</button>
-                    </div>
-                    <div class="health-records-list" id="bpRecords">
-                        <div class="empty-state">
-                            <div class="empty-icon">❤️</div>
-                            <div class="empty-text">点击 + 添加第一条血压记录</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="health-card">
-                    <div class="health-card-header">
-                        <div class="health-card-title">
-                            <span>🏥</span> 重要产检
-                        </div>
-                    </div>
-                    <div class="health-records-list" id="checkupList">
-                        <!-- Checkup schedule will be generated by JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tips Page -->
-            <div class="page" id="tipsPage">
-                <div class="section-title">
-                    <h2><span>💡</span> 每日贴士</h2>
-                </div>
-
-                <div id="tipsList">
-                    <!-- Tips will be generated by JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab Bar -->
-        <div class="tab-bar" id="tabBar" style="display: none;">
-            <div class="tab-item active" data-tab="home">
-                <div class="tab-icon">🏠</div>
-                <div class="tab-label">首页</div>
-            </div>
-            <div class="tab-item" data-tab="tracker">
-                <div class="tab-icon">📅</div>
-                <div class="tab-label">孕期</div>
-            </div>
-            <div class="tab-item" data-tab="todo">
-                <div class="tab-icon">✅</div>
-                <div class="tab-label">待办</div>
-            </div>
-            <div class="tab-item" data-tab="health">
-                <div class="tab-icon">💪</div>
-                <div class="tab-label">健康</div>
-            </div>
-            <div class="tab-item" data-tab="tips">
-                <div class="tab-icon">💡</div>
-                <div class="tab-label">贴士</div>
-            </div>
-        </div>
-
-        <!-- Modal: Add Weight -->
-        <div class="modal-overlay" id="weightModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <div class="modal-title">记录体重</div>
-                    <button class="modal-close" onclick="closeModal('weightModal')">×</button>
-                </div>
-                <input type="number" class="modal-input" id="weightValue" placeholder="体重 (kg)" step="0.1">
-                <div class="modal-buttons">
-                    <button class="modal-btn cancel" onclick="closeModal('weightModal')">取消</button>
-                    <button class="modal-btn confirm" onclick="addWeight()">保存</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal: Add BP -->
-        <div class="modal-overlay" id="bpModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <div class="modal-title">记录血压</div>
-                    <button class="modal-close" onclick="closeModal('bpModal')">×</button>
-                </div>
-                <input type="number" class="modal-input" id="bpHigh" placeholder="收缩压 (mmHg)" style="margin-bottom: 12px;">
-                <input type="number" class="modal-input" id="bpLow" placeholder="舒张压 (mmHg)">
-                <div class="modal-buttons">
-                    <button class="modal-btn cancel" onclick="closeModal('bpModal')">取消</button>
-                    <button class="modal-btn confirm" onclick="addBp()">保存</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal: Add Todo -->
-        <div class="modal-overlay" id="todoModal">
-            <div class="modal">
-                <div class="modal-header">
-                    <div class="modal-title">添加待办</div>
-                    <button class="modal-close" onclick="closeModal('todoModal')">×</button>
-                </div>
-                <input type="text" class="modal-input" id="todoText" placeholder="待办事项内容">
-                <select class="modal-input" id="todoStage">
-                    <option value="early">孕早期</option>
-                    <option value="mid">孕中期</option>
-                    <option value="late">孕晚期</option>
-                </select>
-                <div class="modal-buttons">
-                    <button class="modal-btn cancel" onclick="closeModal('todoModal')">取消</button>
-                    <button class="modal-btn confirm" onclick="addTodo()">添加</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal: Week Detail -->
-        <div class="modal-overlay" id="weekDetailModal">
-            <div class="modal week-detail-modal">
-                <div class="modal-header">
-                    <div class="modal-title" id="weekDetailTitle">第12周详情</div>
-                    <button class="modal-close" onclick="closeModal('weekDetailModal')">×</button>
-                </div>
-                <div class="week-detail-content" id="weekDetailContent">
-                    <!-- Content will be generated by JS -->
-                </div>
-            </div>
-        </div>
+      <div class="section-title">
+        <h2><span>📋</span> 本周重点</h2>
+        <span class="more" onclick="switchTab('tracker')">查看全部 ›</span>
+      </div>
+      <div class="info-card">
+        <h3><span>👶</span> 胎儿发育</h3>
+        <ul class="info-list" id="babyDevList"></ul>
+      </div>
+      <div class="info-card">
+        <h3><span>💕</span> 妈妈变化</h3>
+        <ul class="info-list" id="momChangesList"></ul>
+      </div>
+      <div class="info-card">
+        <h3><span>⚠️</span> 本周提醒</h3>
+        <ul class="info-list" id="weekTipsList"></ul>
+      </div>
     </div>
 
-    <script>
-        // Baby size data by week
-        const babyData = {
-            1: { emoji: '🔴', size: '一颗罂粟籽', desc: '受精卵正在着床' },
-            2: { emoji: '🔴', size: '一颗芝麻', desc: '胚胎开始形成' },
-            3: { emoji: '🔴', size: '一颗芝麻', desc: '心脏开始跳动' },
-            4: { emoji: '🫐', size: '一颗蓝莓', desc: '胳膊和腿开始形成' },
-            5: { emoji: '🫐', size: '一颗蓝莓', desc: '面部特征开始发育' },
-            6: { emoji: '🍇', size: '一颗葡萄', desc: '手指和脚趾开始形成' },
-            7: { emoji: '🍇', size: '一颗葡萄', desc: '大脑快速发育' },
-            8: { emoji: '🍒', size: '一颗樱桃', desc: '所有主要器官已形成' },
-            9: { emoji: '🍒', size: '一颗樱桃', desc: '肌肉开始工作' },
-            10: { emoji: '🍓', size: '一颗草莓', desc: '指甲开始生长' },
-            11: { emoji: '🍓', size: '一颗草莓', desc: '头发开始生长' },
-            12: { emoji: '🍋', size: '一颗柠檬', desc: '手指可以张开合拢' },
-            13: { emoji: '🍋', size: '一颗柠檬', desc: '指纹形成' },
-            14: { emoji: '🍑', size: '一颗桃子', desc: '开始有表情' },
-            15: { emoji: '🍑', size: '一颗桃子', desc: '可以感知光线' },
-            16: { emoji: '🥑', size: '一颗牛油果', desc: '指甲完全形成' },
-            17: { emoji: '🥑', size: '一颗牛油果', desc: '骨骼从软骨变硬' },
-            18: { emoji: '🍏', size: '一个苹果', desc: '可以听到声音' },
-            19: { emoji: '🍏', size: '一个苹果', desc: '开始长脂肪' },
-            20: { emoji: '🥕', size: '一根胡萝卜', desc: '吞咽羊水' },
-            21: { emoji: '🥕', size: '一根胡萝卜', desc: '眉毛和眼睑完全形成' },
-            22: { emoji: '🥕', size: '一根胡萝卜', desc: '看起来像小宝宝' },
-            23: { emoji: '🥕', size: '一根胡萝卜', desc: '听力很好' },
-            24: { emoji: '🌽', size: '一根玉米', desc: '肺部发育' },
-            25: { emoji: '🌽', size: '一根玉米', desc: '开始长头发' },
-            26: { emoji: '🌽', size: '一根玉米', desc: '眼睛可以睁开' },
-            27: { emoji: '🥦', size: '一朵西兰花', desc: '大脑快速发育' },
-            28: { emoji: '🥦', size: '一朵西兰花', desc: '可以做梦' },
-            29: { emoji: '🥦', size: '一朵西兰花', desc: '肌肉和肺部成熟' },
-            30: { emoji: '🥦', size: '一朵西兰花', desc: '头部在长大' },
-            31: { emoji: '🥦', size: '一朵西兰花', desc: '五感完全发育' },
-            32: { emoji: '🥬', size: '一棵生菜', desc: '指甲长到指尖' },
-            33: { emoji: '🥬', size: '一棵生菜', desc: '骨头变硬' },
-            34: { emoji: '🥬', size: '一棵生菜', desc: '中枢神经成熟' },
-            35: { emoji: '🍈', size: '一个哈密瓜', desc: '肾脏发育完全' },
-            36: { emoji: '🍈', size: '一个哈密瓜', desc: '随时可能出生' },
-            37: { emoji: '🍈', size: '一个哈密瓜', desc: '足月宝宝' },
-            38: { emoji: '🍈', size: '一个哈密瓜', desc: '继续长肉' },
-            39: { emoji: '🍈', size: '一个哈密瓜', desc: '大脑继续发育' },
-            40: { emoji: '🍉', size: '一个西瓜', desc: '准备好见面啦！' }
-        };
-
-        // Pregnancy info by week
-        const pregnancyInfo = {
-            early: {
-                title: '孕早期',
-                babyChanges: [
-                    '胎儿器官快速发育',
-                    '心跳开始出现',
-                    '四肢开始形成',
-                    '面部特征逐渐显现'
-                ],
-                momChanges: [
-                    '可能出现孕吐反应',
-                    '乳房胀痛、敏感',
-                    '容易疲劳、嗜睡',
-                    '情绪波动较大'
-                ],
-                tips: [
-                    '继续补充叶酸',
-                    '避免接触有害物质',
-                    '保持充足睡眠',
-                    '少吃多餐，缓解孕吐'
-                ]
-            },
-            mid: {
-                title: '孕中期',
-                babyChanges: [
-                    '开始有胎动',
-                    '性别可以辨别',
-                    '可以听到外界声音',
-                    '毛发和指甲生长'
-                ],
-                momChanges: [
-                    '孕吐逐渐消失',
-                    '食欲增加',
-                    '腹部明显隆起',
-                    '可能会出现妊娠纹'
-                ],
-                tips: [
-                    '注意补钙和铁',
-                    '适度运动，如散步',
-                    '穿着舒适孕妇装',
-                    '开始胎教'
-                ]
-            },
-            late: {
-                title: '孕晚期',
-                babyChanges: [
-                    '胎位逐渐固定',
-                    '肺部发育成熟',
-                    '皮下脂肪积累',
-                    '随时准备出生'
-                ],
-                momChanges: [
-                    '尿频加重',
-                    '可能出现水肿',
-                    '睡眠困难',
-                    '宫缩可能出现'
-                ],
-                tips: [
-                    '准备好待产包',
-                    '注意数胎动',
-                    '避免长途旅行',
-                    '了解临产征兆'
-                ]
-            }
-        };
-
-        // Default todos
-        const defaultTodos = [
-            { id: 1, title: '预约第一次产检', stage: 'early', done: false },
-            { id: 2, title: '开始补充叶酸', stage: 'early', done: false },
-            { id: 3, title: '购买孕妇装', stage: 'early', done: false },
-            { id: 4, title: '做NT检查', stage: 'early', done: false },
-            { id: 5, title: '预约大排畸检查', stage: 'mid', done: false },
-            { id: 6, title: '开始涂抹妊娠纹霜', stage: 'mid', done: false },
-            { id: 7, title: '准备待产包', stage: 'late', done: false },
-            { id: 8, title: '学习拉玛泽呼吸法', stage: 'late', done: false },
-            { id: 9, title: '确定生产的医院', stage: 'early', done: false },
-            { id: 10, title: '预订月嫂或月子中心', stage: 'mid', done: false }
-        ];
-
-        // Tips data
-        const tipsData = [
-            { id: 1, category: '饮食', title: '孕期这样吃，长胎不长肉', content: '多吃蛋白质丰富的食物，如鱼、肉、蛋、豆制品；多吃蔬菜水果，补充维生素；少吃高糖高脂肪食物。', liked: false },
-            { id: 2, category: '运动', title: '适合孕妇的运动有哪些？', content: '散步是最安全、最适合孕妇的运动；孕妇瑜伽可以增强柔韧性和体力；游泳可以减轻孕期不适。', liked: false },
-            { id: 3, category: '睡眠', title: '孕期睡姿有讲究', content: '孕中晚期建议左侧卧睡，可以改善子宫右旋，减轻心脏负担；可以用枕头垫在肚子下面缓解不适。', liked: false },
-            { id: 4, category: '护肤', title: '孕期护肤品怎么选？', content: '选择无添加、无刺激的孕妇专用护肤品；避免使用含维A酸、水杨酸的产品；做好防晒工作。', liked: false },
-            { id: 5, category: '情绪', title: '孕期情绪波动正常吗？', content: '孕期激素变化会导致情绪波动，这是正常的。多和家人沟通，做一些让自己开心的事情，必要时就医咨询。', liked: false },
-            { id: 6, category: '营养', title: '孕期补铁很重要', content: '孕期缺铁容易导致贫血，影响胎儿发育。富含铁的食物包括红肉、动物肝脏、菠菜等，必要时在医生指导下补充铁剂。', liked: false },
-            { id: 7, category: '产检', title: '孕期需要做哪些重要检查？', content: '孕12周：NT检查；孕16-20周：唐氏筛查；孕20-24周：大排畸；孕24-28周：糖耐量测试。', liked: false },
-            { id: 8, category: '生活', title: '孕期出行要注意什么？', content: '孕早期和孕晚期尽量避免长途旅行；出行时穿着宽松舒适；随身携带产检资料；避免剧烈运动和重体力活。', liked: false }
-        ];
-
-        // Checkup schedule
-        const checkupSchedule = [
-            { week: 6-8, name: '第一次产检', desc: '确认怀孕，建立档案' },
-            { week: 12, name: 'NT检查', desc: '胎儿颈部透明带扫描' },
-            { week: 16, name: '唐氏筛查', desc: '评估唐氏综合症风险' },
-            { week: 20, name: '大排畸', desc: '系统性超声检查' },
-            { week: 24, name: '糖耐量测试', desc: '妊娠糖尿病筛查' },
-            { week: 28, name: '乙肝复查', desc: '复查乙肝表面抗原' },
-            { week: 32, name: 'B超检查', desc: '评估胎儿发育' },
-            { week: 36, name: 'B族链球菌', desc: '分娩前检查' },
-            { week: 37-40, name: '产前检查', desc: '每周一次，监测胎位' }
-        ];
-
-        // App state
-        let appData = {
-            lastPeriodDate: null,
-            createdAt: null,
-            todos: [...defaultTodos],
-            weightRecords: [],
-            bpRecords: [],
-            tips: [...tipsData]
-        };
-
-        let currentTab = 'home';
-        let selectedWeek = 1;
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            initGreeting();
-            initTabBar();
-            initFilterBtns();
-
-            // Set default date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('lastPeriodDate').value = today;
-
-            // Check if user has set up
-            if (appData.lastPeriodDate) {
-                showMainContent();
-            }
-        });
-
-        // Load data from localStorage
-        function loadData() {
-            const saved = localStorage.getItem('pregnancyAppData');
-            if (saved) {
-                appData = JSON.parse(saved);
-            }
-        }
-
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('pregnancyAppData', JSON.stringify(appData));
-        }
-
-        // Initialize greeting
-        function initGreeting() {
-            const hour = new Date().getHours();
-            const greetingEl = document.getElementById('greeting');
-            if (hour < 12) {
-                greetingEl.textContent = '早上好 ☀️';
-            } else if (hour < 18) {
-                greetingEl.textContent = '下午好 🌤️';
-            } else {
-                greetingEl.textContent = '晚上好 🌙';
-            }
-        }
-
-        // Start button handler
-        document.getElementById('startBtn').addEventListener('click', () => {
-            const dateInput = document.getElementById('lastPeriodDate').value;
-            if (!dateInput) {
-                alert('请选择末次月经日期');
-                return;
-            }
-
-            appData.lastPeriodDate = dateInput;
-            appData.createdAt = new Date().toISOString();
-            saveData();
-            showMainContent();
-        });
-
-        // Show main content
-        function showMainContent() {
-            document.getElementById('setupContainer').classList.add('hidden');
-            document.getElementById('mainContent').classList.add('active');
-            document.getElementById('tabBar').style.display = 'flex';
-
-            updateHomePage();
-            updateTrackerPage();
-            updateTodoList();
-            updateHealthPage();
-            updateTipsPage();
-        }
-
-        // Tab bar initialization
-        function initTabBar() {
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabName = tab.dataset.tab;
-                    switchTab(tabName);
-                });
-            });
-        }
-
-        // Switch tab
-        function switchTab(tabName) {
-            currentTab = tabName;
-
-            // Update tab bar
-            document.querySelectorAll('.tab-item').forEach(t => {
-                t.classList.toggle('active', t.dataset.tab === tabName);
-            });
-
-            // Update pages
-            document.querySelectorAll('.page').forEach(p => {
-                p.classList.remove('active');
-            });
-            document.getElementById(tabName + 'Page').classList.add('active');
-        }
-
-        // Update home page
-        function updateHomePage() {
-            if (!appData.lastPeriodDate) return;
-
-            const weekInfo = calculateWeekInfo();
-            const week = weekInfo.week;
-            selectedWeek = week;
-
-            // Update baby info
-            const data = babyData[week] || babyData[40];
-            document.getElementById('babyEmoji').textContent = data.emoji;
-            document.getElementById('babySizeText').textContent = '本周像' + data.size;
-            document.getElementById('babySizeDesc').textContent = data.desc;
-
-            // Update progress
-            const progress = Math.min((week / 40) * 100, 100);
-            const circumference = 2 * Math.PI * 50;
-            const offset = circumference - (progress / 100) * circumference;
-            document.getElementById('progressRing').style.strokeDashoffset = offset;
-
-            // Update stats
-            document.getElementById('currentWeek').textContent = '第' + week + '周';
-            document.querySelector('.progress-week-label').textContent = getTrimesterLabel(week);
-            document.getElementById('eddDate').textContent = weekInfo.edd;
-            document.getElementById('daysLeft').textContent = weekInfo.daysLeft + '天';
-
-            // Update info lists
-            updateInfoLists(week);
-        }
-
-        // Calculate week info
-        function calculateWeekInfo() {
-            const lastPeriod = new Date(appData.lastPeriodDate);
-            const today = new Date();
-            const diffTime = today - lastPeriod;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            const week = Math.min(Math.max(Math.floor(diffDays / 7), 1), 40);
-
-            // EDD = lastPeriod + 280 days
-            const edd = new Date(lastPeriod);
-            edd.setDate(edd.getDate() + 280);
-            const eddStr = edd.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            // Days left
-            const daysLeft = Math.max(0, 280 - diffDays);
-
-            return { week, edd: eddStr, daysLeft };
-        }
-
-        // Get trimester label
-        function getTrimesterLabel(week) {
-            if (week <= 13) return '孕早期';
-            if (week <= 28) return '孕中期';
-            return '孕晚期';
-        }
-
-        // Update info lists
-        function updateInfoLists(week) {
-            let info;
-            if (week <= 13) {
-                info = pregnancyInfo.early;
-            } else if (week <= 28) {
-                info = pregnancyInfo.mid;
-            } else {
-                info = pregnancyInfo.late;
-            }
-
-            const babyList = document.getElementById('babyDevList');
-            const momList = document.getElementById('momChangesList');
-
-            babyList.innerHTML = info.babyChanges.map(item => `<li>${item}</li>`).join('');
-            momList.innerHTML = info.momChanges.map(item => `<li>${item}</li>`).join('');
-        }
-
-        // Update tracker page
-        function updateTrackerPage() {
-            const weekInfo = calculateWeekInfo();
-            const today = new Date();
-
-            // Update header
-            document.getElementById('trackerDate').textContent = '今天是' + today.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('trackerEdd').textContent = '预产期：' + weekInfo.edd;
-
-            const progress = Math.min((weekInfo.week / 40) * 100, 100);
-            document.getElementById('trackerProgressFill').style.width = progress + '%';
-            document.getElementById('trackerProgressText').textContent = '孕期已完成 ' + Math.round(progress) + '%';
-
-            // Generate week selector
-            const selector = document.getElementById('weekSelector');
-            selector.innerHTML = '';
-            for (let i = 1; i <= 40; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'week-btn' + (i === weekInfo.week ? ' active' : '');
-                btn.textContent = '第' + i + '周';
-                btn.addEventListener('click', () => showWeekDetail(i));
-                selector.appendChild(btn);
-            }
-
-            // Show current week detail
-            showWeekDetail(weekInfo.week);
-        }
-
-        // Show week detail
-        function showWeekDetail(week) {
-            selectedWeek = week;
-
-            // Update week selector active state
-            document.querySelectorAll('.week-btn').forEach((btn, index) => {
-                btn.classList.toggle('active', index + 1 === week);
-            });
-
-            const data = babyData[week] || babyData[40];
-            let info;
-            if (week <= 13) {
-                info = pregnancyInfo.early;
-            } else if (week <= 28) {
-                info = pregnancyInfo.mid;
-            } else {
-                info = pregnancyInfo.late;
-            }
-
-            const container = document.getElementById('weekDetail');
-            container.innerHTML = `
-                <div class="baby-size-card" style="cursor: pointer;" onclick="showWeekDetailModal(${week})">
-                    <div class="baby-emoji">${data.emoji}</div>
-                    <div class="baby-size-text">本周像${data.size}</div>
-                    <div class="baby-size-desc">${data.desc}</div>
-                </div>
-                <div class="info-card">
-                    <h3><span>👶</span> ${info.title} - 胎儿发育</h3>
-                    <ul class="info-list">
-                        ${info.babyChanges.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h3><span>💕</span> 妈妈变化</h3>
-                    <ul class="info-list">
-                        ${info.momChanges.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h3><span>💡</span> 小贴士</h3>
-                    <ul class="info-list">
-                        ${info.tips.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-
-        // Show week detail modal
-        function showWeekDetailModal(week) {
-            const data = babyData[week] || babyData[40];
-            let info;
-            if (week <= 13) {
-                info = pregnancyInfo.early;
-            } else if (week <= 28) {
-                info = pregnancyInfo.mid;
-            } else {
-                info = pregnancyInfo.late;
-            }
-
-            document.getElementById('weekDetailTitle').textContent = '第' + week + '周详情';
-            document.getElementById('weekDetailContent').innerHTML = `
-                <div class="week-detail-header">
-                    <div class="week-detail-emoji">${data.emoji}</div>
-                    <div class="week-detail-title">${data.size}</div>
-                    <div class="week-detail-subtitle">${data.desc}</div>
-                </div>
-                <div class="info-card">
-                    <h3><span>👶</span> 胎儿发育</h3>
-                    <ul class="info-list">
-                        ${info.babyChanges.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h3><span>💕</span> 妈妈变化</h3>
-                    <ul class="info-list">
-                        ${info.momChanges.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h3><span>💡</span> 温馨提醒</h3>
-                    <ul class="info-list">
-                        ${info.tips.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-
-            openModal('weekDetailModal');
-        }
-
-        // Update todo list
-        function updateTodoList() {
-            const container = document.getElementById('todoList');
-            const weekInfo = calculateWeekInfo();
-            const currentStage = weekInfo.week <= 13 ? 'early' : (weekInfo.week <= 28 ? 'mid' : 'late');
-
-            // Get current filter
-            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-
-            let todos = appData.todos;
-            if (activeFilter !== 'all') {
-                todos = todos.filter(t => t.stage === activeFilter);
-            }
-
-            if (todos.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📝</div>
-                        <div class="empty-text">暂无待办事项</div>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = todos.map(todo => `
-                <div class="todo-item ${todo.done ? 'done' : ''}" onclick="toggleTodo(${todo.id})">
-                    <div class="todo-checkbox">${todo.done ? '✓' : ''}</div>
-                    <div class="todo-content">
-                        <div class="todo-text">${todo.title}</div>
-                        <div class="todo-meta">
-                            <span class="todo-tag ${todo.stage}">${todo.stage === 'early' ? '孕早期' : (todo.stage === 'mid' ? '孕中期' : '孕晚期')}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Toggle todo
-        function toggleTodo(id) {
-            const todo = appData.todos.find(t => t.id === id);
-            if (todo) {
-                todo.done = !todo.done;
-                saveData();
-                updateTodoList();
-
-                if (todo.done) {
-                    showCelebration();
-                }
-            }
-        }
-
-        // Show celebration
-        function showCelebration() {
-            const celebration = document.createElement('div');
-            celebration.className = 'celebration';
-            celebration.textContent = '🎉';
-            document.body.appendChild(celebration);
-            setTimeout(() => celebration.remove(), 1000);
-        }
-
-        // Init filter buttons
-        function initFilterBtns() {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    updateTodoList();
-                });
-            });
-        }
-
-        // Show add todo modal
-        function showAddTodoModal() {
-            document.getElementById('todoText').value = '';
-            openModal('todoModal');
-        }
-
-        // Add todo
-        function addTodo() {
-            const text = document.getElementById('todoText').value.trim();
-            const stage = document.getElementById('todoStage').value;
-
-            if (!text) {
-                alert('请输入待办事项内容');
-                return;
-            }
-
-            const newTodo = {
-                id: Date.now(),
-                title: text,
-                stage: stage,
-                done: false
-            };
-
-            appData.todos.push(newTodo);
-            saveData();
-            updateTodoList();
-            closeModal('todoModal');
-        }
-
-        // Update health page
-        function updateHealthPage() {
-            updateWeightRecords();
-            updateBpRecords();
-            updateCheckupList();
-        }
-
-        // Update weight records
-        function updateWeightRecords() {
-            const container = document.getElementById('weightRecords');
-
-            if (appData.weightRecords.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <div class="empty-text">点击 + 添加第一条体重记录</div>
-                    </div>
-                `;
-                return;
-            }
-
-            const recent = appData.weightRecords.slice(-5).reverse();
-            container.innerHTML = recent.map(r => `
-                <div class="record-item">
-                    <span class="record-date">${new Date(r.date).toLocaleDateString('zh-CN')}</span>
-                    <span class="record-value">${r.value} kg</span>
-                </div>
-            `).join('');
-
-            // Update chart
-            updateWeightChart();
-        }
-
-        // Update weight chart
-        function updateWeightChart() {
-            const chart = document.getElementById('weightChart');
-            const labels = document.getElementById('weightChartLabels');
-
-            if (appData.weightRecords.length < 2) {
-                chart.innerHTML = '';
-                labels.innerHTML = '';
-                return;
-            }
-
-            const recent = appData.weightRecords.slice(-7);
-            const values = recent.map(r => r.value);
-            const max = Math.max(...values);
-            const min = Math.min(...values);
-            const range = max - min || 1;
-
-            chart.innerHTML = recent.map(r => {
-                const height = 50 + ((r.value - min) / range) * 100;
-                return `<div class="chart-bar" style="height: ${height}px;"></div>`;
-            }).join('');
-
-            labels.innerHTML = recent.map(r => `
-                <span class="chart-label">${new Date(r.date).getMonth() + 1}/${new Date(r.date).getDate()}</span>
-            `).join('');
-        }
-
-        // Update BP records
-        function updateBpRecords() {
-            const container = document.getElementById('bpRecords');
-
-            if (appData.bpRecords.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">❤️</div>
-                        <div class="empty-text">点击 + 添加第一条血压记录</div>
-                    </div>
-                `;
-                return;
-            }
-
-            const recent = appData.bpRecords.slice(-5).reverse();
-            container.innerHTML = recent.map(r => {
-                let status = 'good';
-                let statusText = '正常';
-                if (r.high >= 140 || r.low >= 90) {
-                    status = 'danger';
-                    statusText = '偏高';
-                } else if (r.high < 90 || r.low < 60) {
-                    status = 'warning';
-                    statusText = '偏低';
-                }
-
-                return `
-                    <div class="record-item">
-                        <span class="record-date">${new Date(r.date).toLocaleDateString('zh-CN')}</span>
-                        <span class="record-value ${status}">${r.high}/${r.low} ${statusText}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Update checkup list
-        function updateCheckupList() {
-            const weekInfo = calculateWeekInfo();
-            const container = document.getElementById('checkupList');
-
-            container.innerHTML = checkupSchedule.map(c => {
-                let status = '';
-                if (typeof c.week === 'number' && weekInfo.week > c.week + 2) {
-                    status = '<span style="color: var(--success);">已完成</span>';
-                } else if (typeof c.week === 'number' && weekInfo.week >= c.week - 1 && weekInfo.week <= c.week + 1) {
-                    status = '<span style="color: var(--primary);">即将到来</span>';
-                } else if (typeof c.week === 'string' && c.week.includes('-')) {
-                    const [start, end] = c.week.split('-').map(Number);
-                    if (weekInfo.week >= start && weekInfo.week <= end) {
-                        status = '<span style="color: var(--primary);">正在进行</span>';
-                    }
-                }
-
-                return `
-                    <div class="record-item">
-                        <div>
-                            <div class="record-value" style="font-size: 14px;">${c.name}</div>
-                            <div class="record-date">${typeof c.week === 'number' ? '孕' + c.week + '周' : '孕' + c.week} · ${c.desc}</div>
-                        </div>
-                        ${status}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Show weight modal
-        function showWeightModal() {
-            document.getElementById('weightValue').value = '';
-            openModal('weightModal');
-        }
-
-        // Add weight
-        function addWeight() {
-            const value = parseFloat(document.getElementById('weightValue').value);
-            if (isNaN(value) || value <= 0) {
-                alert('请输入有效的体重值');
-                return;
-            }
-
-            appData.weightRecords.push({
-                date: new Date().toISOString(),
-                value: value
-            });
-            saveData();
-            updateWeightRecords();
-            closeModal('weightModal');
-        }
-
-        // Show BP modal
-        function showBpModal() {
-            document.getElementById('bpHigh').value = '';
-            document.getElementById('bpLow').value = '';
-            openModal('bpModal');
-        }
-
-        // Add BP
-        function addBp() {
-            const high = parseInt(document.getElementById('bpHigh').value);
-            const low = parseInt(document.getElementById('bpLow').value);
-
-            if (isNaN(high) || isNaN(low) || high <= 0 || low <= 0) {
-                alert('请输入有效的血压值');
-                return;
-            }
-
-            appData.bpRecords.push({
-                date: new Date().toISOString(),
-                high: high,
-                low: low
-            });
-            saveData();
-            updateBpRecords();
-            closeModal('bpModal');
-        }
-
-        // Update tips page
-        function updateTipsPage() {
-            const container = document.getElementById('tipsList');
-            container.innerHTML = appData.tips.map(tip => `
-                <div class="tip-card" onclick="toggleTipLike(${tip.id})">
-                    <div class="tip-category">
-                        <span>🏷️</span> ${tip.category}
-                    </div>
-                    <div class="tip-title">${tip.title}</div>
-                    <div class="tip-content">${tip.content}</div>
-                    <div class="tip-footer">
-                        <div class="tip-date">${new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}</div>
-                        <div class="tip-like ${tip.liked ? 'liked' : ''}">
-                            <span>${tip.liked ? '❤️' : '🤍'}</span>
-                            <span>${tip.liked ? '已收藏' : '收藏'}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Toggle tip like
-        function toggleTipLike(id) {
-            const tip = appData.tips.find(t => t.id === id);
-            if (tip) {
-                tip.liked = !tip.liked;
-                saveData();
-                updateTipsPage();
-            }
-        }
-
-        // Modal functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Close modal on overlay click
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('active');
-                }
-            });
-        });
-    </script>
+    <!-- 2. TRACKER -->
+    <div class="page" id="trackerPage">
+      <div class="tracker-header">
+        <div class="tracker-date" id="trackerDate">——</div>
+        <div class="tracker-edd" id="trackerEdd">——</div>
+        <div class="tracker-progress-bar"><div class="tracker-progress-fill" id="trackerProgressFill" style="width:30%"></div></div>
+        <div class="tracker-progress-text" id="trackerProgressText">——</div>
+      </div>
+      <div class="section-title"><h2><span>📅</span> 孕期日历</h2></div>
+      <div class="week-selector" id="weekSelector"></div>
+      <div id="weekDetail"></div>
+    </div>
+
+    <!-- 3. TODO -->
+    <div class="page" id="todoPage">
+      <div class="section-title"><h2><span>✅</span> 孕期待办</h2></div>
+      <div class="todo-filters">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="early">孕早期</button>
+        <button class="filter-btn" data-filter="mid">孕中期</button>
+        <button class="filter-btn" data-filter="late">孕晚期</button>
+      </div>
+      <div id="todoList"></div>
+      <button class="btn" style="margin-top:16px;" onclick="showAddTodoModal()">+ 添加待办事项</button>
+    </div>
+
+    <!-- 4. HEALTH -->
+    <div class="page" id="healthPage">
+      <div class="section-title"><h2><span>💪</span> 健康记录</h2></div>
+      <div class="health-card">
+        <div class="health-card-header">
+          <div class="health-card-title"><span>⚖️</span> 体重记录</div>
+          <button class="add-record-btn" onclick="showWeightModal()">+</button>
+        </div>
+        <div class="weight-chart" id="weightChart"></div>
+        <div class="chart-labels" id="weightChartLabels"></div>
+        <div class="health-records-list" id="weightRecords"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 添加第一条体重记录</div></div></div>
+      </div>
+      <div class="health-card">
+        <div class="health-card-header">
+          <div class="health-card-title"><span>❤️</span> 血压记录</div>
+          <button class="add-record-btn" onclick="showBpModal()">+</button>
+        </div>
+        <div class="health-records-list" id="bpRecords"><div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 添加第一条血压记录</div></div></div>
+      </div>
+      <div class="health-card">
+        <div class="health-card-header">
+          <div class="health-card-title"><span>🏥</span> 重要产检</div>
+        </div>
+        <div class="health-records-list" id="checkupList"></div>
+      </div>
+    </div>
+
+    <!-- 5. TIPS -->
+    <div class="page" id="tipsPage">
+      <div class="section-title"><h2><span>💡</span> 每日贴士</h2></div>
+      <div id="tipsList"></div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar" id="tabBar" style="display:none">
+    <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span><span class="tab-label">首页</span></div>
+    <div class="tab-item" data-tab="tracker"><span class="tab-icon">📅</span><span class="tab-label">孕期</span></div>
+    <div class="tab-item" data-tab="todo"><span class="tab-icon">✅</span><span class="tab-label">待办</span></div>
+    <div class="tab-item" data-tab="health"><span class="tab-icon">💪</span><span class="tab-label">健康</span></div>
+    <div class="tab-item" data-tab="tips"><span class="tab-icon">💡</span><span class="tab-label">贴士</span></div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="weightModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-header"><div class="modal-title">⚖️ 记录体重</div><button class="modal-close" onclick="closeModal('weightModal')">×</button></div>
+  <input type="number" class="modal-input" id="weightValue" placeholder="体重 (kg)" step="0.1" inputmode="decimal">
+  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('weightModal')">取消</button><button class="modal-btn confirm" onclick="addWeight()">保存</button></div>
+</div></div>
+
+<div class="modal-overlay" id="bpModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-header"><div class="modal-title">❤️ 记录血压</div><button class="modal-close" onclick="closeModal('bpModal')">×</button></div>
+  <input type="number" class="modal-input" id="bpHigh" placeholder="收缩压 (mmHg)" style="margin-bottom:12px" inputmode="numeric">
+  <input type="number" class="modal-input" id="bpLow" placeholder="舒张压 (mmHg)" inputmode="numeric">
+  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('bpModal')">取消</button><button class="modal-btn confirm" onclick="addBp()">保存</button></div>
+</div></div>
+
+<div class="modal-overlay" id="todoModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-header"><div class="modal-title">📝 添加待办</div><button class="modal-close" onclick="closeModal('todoModal')">×</button></div>
+  <input type="text" class="modal-input" id="todoText" placeholder="待办事项内容" enterkeyhint="done">
+  <select class="modal-input" id="todoStage"><option value="early">孕早期</option><option value="mid">孕中期</option><option value="late">孕晚期</option></select>
+  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('todoModal')">取消</button><button class="modal-btn confirm" onclick="addTodo()">添加</button></div>
+</div></div>
+
+<div class="modal-overlay" id="weekDetailModal"><div class="modal week-detail-modal">
+  <div class="modal-handle"></div>
+  <div class="modal-header"><div class="modal-title" id="weekDetailTitle">第12周详情</div><button class="modal-close" onclick="closeModal('weekDetailModal')">×</button></div>
+  <div class="week-detail-content" id="weekDetailContent"></div>
+</div></div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+// ======================== DATA ========================
+
+const babyData = {
+  1:{emoji:'🔴',size:'一颗罂粟籽',desc:'受精卵正在着床，生命的旅程开始啦'},
+  2:{emoji:'🔴',size:'一颗芝麻',desc:'胚胎开始形成，宝宝开始生长'},
+  3:{emoji:'🔴',size:'一颗芝麻',desc:'心脏开始跳动，每分钟约150次'},
+  4:{emoji:'🫐',size:'一颗蓝莓',desc:'胳膊和腿的小芽开始出现'},
+  5:{emoji:'🫐',size:'一颗蓝莓',desc:'面部特征开始发育，可以看到眼睛的轮廓'},
+  6:{emoji:'🍇',size:'一颗葡萄',desc:'手指和脚趾开始形成，心脏分为四个腔室'},
+  7:{emoji:'🍇',size:'一颗葡萄',desc:'大脑快速发育，身体开始伸展'},
+  8:{emoji:'🍒',size:'一颗樱桃',desc:'所有主要器官已形成，开始像个小人了'},
+  9:{emoji:'🍒',size:'一颗樱桃',desc:'肌肉开始工作，开始做出微小动作'},
+  10:{emoji:'🍓',size:'一颗草莓',desc:'指甲开始生长，肾脏开始产生尿液'},
+  11:{emoji:'🍓',size:'一颗草莓',desc:'头发开始生长，手指脚趾完全分开'},
+  12:{emoji:'🍋',size:'一颗柠檬',desc:'手指可以张开合拢，开始有反射动作'},
+  13:{emoji:'🍋',size:'一颗柠檬',desc:'指纹形成，声带开始发育'},
+  14:{emoji:'🍑',size:'一颗桃子',desc:'开始有表情，可以皱眉头、做鬼脸'},
+  15:{emoji:'🍑',size:'一颗桃子',desc:'可以感知光线，头部开始长头发'},
+  16:{emoji:'🥑',size:'一颗牛油果',desc:'指甲完全形成，头部开始直立'},
+  17:{emoji:'🥑',size:'一颗牛油果',desc:'骨骼从软骨变硬，开始储存脂肪'},
+  18:{emoji:'🍏',size:'一个苹果',desc:'可以听到外界声音，对声音有反应'},
+  19:{emoji:'🍏',size:'一个苹果',desc:'开始长脂肪，皮肤不再透明'},
+  20:{emoji:'🥕',size:'一根胡萝卜',desc:'开始吞咽羊水，胎毛覆盖全身'},
+  21:{emoji:'🥕',size:'一根胡萝卜',desc:'眉毛和眼睑完全形成，开始有睡眠周期'},
+  22:{emoji:'🥕',size:'一根胡萝卜',desc:'看起来像小宝宝，嘴唇越来越分明'},
+  23:{emoji:'🥕',size:'一根胡萝卜',desc:'听力敏锐，能识别妈妈的声音'},
+  24:{emoji:'🌽',size:'一根玉米',desc:'肺部开始产生表面活性物质，准备呼吸'},
+  25:{emoji:'🌽',size:'一根玉米',desc:'头发越来越浓密，睁眼闭眼自如'},
+  26:{emoji:'🌽',size:'一根玉米',desc:'眼睛可以睁开，对光线有反应'},
+  27:{emoji:'🥦',size:'一朵西兰花',desc:'大脑快速发育，开始做梦'},
+  28:{emoji:'🥦',size:'一朵西兰花',desc:'睫毛生成，头发继续生长'},
+  29:{emoji:'🥦',size:'一朵西兰花',desc:'肌肉和肺部继续成熟，胎动更明显'},
+  30:{emoji:'🥦',size:'一朵西兰花',desc:'头部在长大，大脑沟回增多'},
+  31:{emoji:'🥦',size:'一朵西兰花',desc:'五感完全发育，能分辨甜味和苦味'},
+  32:{emoji:'🥬',size:'一棵生菜',desc:'指甲长到指尖，骨骼基本硬化'},
+  33:{emoji:'🥬',size:'一棵生菜',desc:'能分辨白天黑夜，睡眠更规律'},
+  34:{emoji:'🥬',size:'一棵生菜',desc:'中枢神经基本成熟，头围接近出生大小'},
+  35:{emoji:'🍈',size:'一个哈密瓜',desc:'肾脏发育完全，胎位逐渐固定'},
+  36:{emoji:'🍈',size:'一个哈密瓜',desc:'肺部基本成熟，随时可能发动'},
+  37:{emoji:'🍈',size:'一个哈密瓜',desc:'足月宝宝，各个器官已准备好出生'},
+  38:{emoji:'🍈',size:'一个哈密瓜',desc:'继续积累脂肪，保持体温能力增强'},
+  39:{emoji:'🍈',size:'一个哈密瓜',desc:'大脑继续发育，随时等待见面'},
+  40:{emoji:'🍉',size:'一个西瓜',desc:'准备好见面啦！期待与宝宝的第一次拥抱'}
+};
+
+const pregnancyInfo = {
+  early:{
+    title:'孕早期',babyChanges:['胎儿器官快速发育，心脏开始跳动','四肢和面部特征开始形成','神经系统和大脑快速发育','开始有反射动作'],
+    momChanges:['可能出现孕吐反应，一般12周后缓解','乳房胀痛、敏感','容易疲劳、嗜睡','情绪波动较大，需要家人理解'],tips:['继续补充叶酸，每天400微克','避免接触有害物质和二手烟','保持充足睡眠，每天8小时','少吃多餐，缓解孕吐反应']
+  },
+  mid:{
+    title:'孕中期',babyChanges:['开始出现明显的胎动','性别可以通过B超辨别','可以听到外界声音，开始胎教','毛发和指甲生长完全'],momChanges:['孕吐逐渐消失','食欲增加，腹部明显隆起','可能会出现妊娠纹','情绪趋于稳定'],tips:['注意补充钙和铁','适度运动，孕期瑜伽是不错的选择','穿着宽松舒适的孕妇装','开始准备婴儿用品']
+  },
+  late:{
+    title:'孕晚期',babyChanges:['胎位逐渐固定为头位','肺部发育成熟','皮下脂肪积累，越来越圆润','随时准备出生'],momChanges:['尿频加重，夜间需要频繁起夜','可能出现手脚水肿','睡眠困难，建议左侧卧','假性宫缩开始出现'],tips:['准备好待产包，提前一个月准备','每天坚持数胎动','避免长途旅行','学习拉玛泽呼吸法，为分娩做准备']
+  }
+};
+
+const defaultTodos = [
+  {id:1,title:'预约第一次产检（确认怀孕）',stage:'early',done:false},
+  {id:2,title:'开始补充叶酸',stage:'early',done:false},
+  {id:3,title:'办理生育登记',stage:'early',done:false},
+  {id:4,title:'做NT检查（11-13周）',stage:'early',done:false},
+  {id:5,title:'预约大排畸检查（20-24周）',stage:'mid',done:false},
+  {id:6,title:'开始涂抹妊娠纹霜',stage:'mid',done:false},
+  {id:7,title:'预约糖耐量测试（24-28周）',stage:'mid',done:false},
+  {id:8,title:'准备待产包',stage:'late',done:false},
+  {id:9,title:'学习拉玛泽呼吸法',stage:'late',done:false},
+  {id:10,title:'确定生产医院和分娩方式',stage:'early',done:false},
+  {id:11,title:'预订月嫂或月子中心',stage:'mid',done:false},
+  {id:12,title:'了解新生儿疫苗接种',stage:'late',done:false}
+];
+
+const tipsData = [
+  {id:1,category:'饮食',title:'孕期这样吃，长胎不长肉',content:'多吃优质蛋白（鱼、肉、蛋、豆制品），每天一杯牛奶补钙，适量水果补充维生素。少吃高糖、高油、高盐食物，避免体重增长过快。',liked:false},
+  {id:2,category:'运动',title:'适合孕期的温和运动',content:'散步是最安全的选择，每天30分钟；孕妇瑜伽有助于增强柔韧性和体力，缓解腰背酸痛；游泳可减轻身体负重感。运动前请咨询医生。',liked:false},
+  {id:3,category:'睡眠',title:'孕期睡姿有讲究',content:'孕中晚期建议姿势为左侧卧，可改善子宫右旋，增加胎盘血流量。可在肚子下、双腿间垫枕头，减轻压力。避免仰卧，防止压迫静脉。',liked:false},
+  {id:4,category:'护肤',title:'孕期护肤品安全指南',content:'选择无香料、无酒精、无刺激的孕妇专用护肤品。避免含维A酸、水杨酸、氢醌等成分的产品。防晒建议选择物理防晒（二氧化钛、氧化锌）。',liked:false},
+  {id:5,category:'情绪',title:'孕期情绪管理很重要',content:'孕期激素波动导致情绪变化是正常的。多与家人沟通分享感受，保持轻度运动，练习深呼吸和冥想。如果持续情绪低落，请及时寻求心理支持。',liked:false},
+  {id:6,category:'营养',title:'孕期补铁防贫血',content:'孕期对铁的需求量增加，缺铁可能导致贫血，影响胎儿发育。富含铁的食物：红肉、动物肝脏（适量）、菠菜、豆类。搭配维生素C（如橙子）可促进铁吸收。',liked:false},
+  {id:7,category:'产检',title:'孕期重要产检时间表',content:'孕6-8周：确认怀孕；11-13周：NT检查；16-20周：唐氏筛查；20-24周：大排畸；24-28周：糖耐量；28周后：每2周产检；36周后：每周产检。',liked:false},
+  {id:8,category:'生活',title:'孕期安全出行指南',content:'孕早期和孕晚期尽量避免长途旅行。出行选择宽松衣物和平底鞋，随身携带饮用水和零食。避免颠簸路段，系好安全带（腰带在腹部下方）。',liked:false}
+];
+
+// ✅ 修复 Bug：使用字符串而非算术表达式
+const checkupSchedule = [
+  {week:'6-8',name:'第一次产检',desc:'确认怀孕，建立档案'},
+  {week:'12',name:'NT检查',desc:'胎儿颈部透明带扫描'},
+  {week:'16',name:'唐氏筛查',desc:'评估唐氏综合症风险'},
+  {week:'20',name:'大排畸',desc:'系统性超声检查'},
+  {week:'24',name:'糖耐量测试',desc:'妊娠糖尿病筛查'},
+  {week:'28',name:'乙肝复查',desc:'复查乙肝表面抗原'},
+  {week:'32',name:'B超检查',desc:'评估胎儿发育情况'},
+  {week:'36',name:'B族链球菌',desc:'分娩前检查'},
+  {week:'37-40',name:'产前检查',desc:'每周一次，监测胎位和宫颈'}
+];
+
+// ======================== STATE ========================
+
+let appData = {
+  lastPeriodDate: null, createdAt: null,
+  todos: [], weightRecords: [], bpRecords: [], tips: []
+};
+let currentTab = 'home';
+let selectedWeek = 1;
+
+// ======================== INIT ========================
+
+document.addEventListener('DOMContentLoaded',()=>{
+  loadData();
+  initGreeting();
+  initTabBar();
+  initFilterBtns();
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('lastPeriodDate').value = today;
+
+  if (appData.lastPeriodDate && appData.todos.length === 0) {
+    // first-time user with data but no todos
+  }
+  if (!appData.lastPeriodDate) {
+    appData.todos = JSON.parse(JSON.stringify(defaultTodos));
+    appData.tips = JSON.parse(JSON.stringify(tipsData));
+  }
+  if (appData.lastPeriodDate) {
+    showMainContent();
+  }
+});
+
+// ======================== PERSISTENCE ========================
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('pregnancyAppData2');
+    if (saved) {
+      appData = JSON.parse(saved);
+      // migrate old data
+      if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
+    } else {
+      // try old key
+      const old = localStorage.getItem('pregnancyAppData');
+      if (old) {
+        const oldData = JSON.parse(old);
+        appData = { ...appData, ...oldData };
+        appData.tips = oldData.tips && oldData.tips.length > 0 ? oldData.tips : JSON.parse(JSON.stringify(tipsData));
+        appData.todos = oldData.todos && oldData.todos.length > 0 ? oldData.todos : JSON.parse(JSON.stringify(defaultTodos));
+      }
+    }
+  } catch(e){ console.warn('Load data error', e); }
+  // ensure defaults
+  if (!appData.todos || appData.todos.length === 0) appData.todos = JSON.parse(JSON.stringify(defaultTodos));
+  if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
+}
+function saveData() {
+  try { localStorage.setItem('pregnancyAppData2', JSON.stringify(appData)); } catch(e){}
+}
+
+// ======================== GREETING ========================
+
+function initGreeting() {
+  const h = new Date().getHours();
+  const el = document.getElementById('greeting');
+  if (h<6) el.textContent='🌙 夜深了，早点休息';
+  else if (h<9) el.textContent='🌅 早安，美好的一天开始啦';
+  else if (h<12) el.textContent='☀️ 上午好，记得吃早餐';
+  else if (h<14) el.textContent='🌤️ 中午好，记得午休';
+  else if (h<18) el.textContent='🌤️ 下午好，喝杯水活动一下';
+  else if (h<21) el.textContent='🌇 傍晚好，慢慢放松下来';
+  else el.textContent='🌙 晚安，做个好梦';
+}
+
+// ======================== START ========================
+
+document.getElementById('startBtn').addEventListener('click',()=>{
+  const v = document.getElementById('lastPeriodDate').value;
+  if (!v) { showToast('请选择末次月经日期'); return; }
+  appData.lastPeriodDate = v;
+  appData.createdAt = new Date().toISOString();
+  if (!appData.todos || appData.todos.length === 0) appData.todos = JSON.parse(JSON.stringify(defaultTodos));
+  if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
+  saveData();
+  showMainContent();
+});
+
+function showMainContent() {
+  document.getElementById('setupContainer').classList.add('hidden');
+  document.getElementById('mainContent').classList.add('active');
+  document.getElementById('tabBar').style.display = 'flex';
+  updateHomePage();
+  updateTrackerPage();
+  updateTodoList();
+  updateHealthPage();
+  updateTipsPage();
+  showToast('🌸 欢迎使用怀孕助手！');
+}
+
+// ======================== TAB BAR ========================
+
+function initTabBar() {
+  document.querySelectorAll('.tab-item').forEach(tab=>{
+    tab.addEventListener('click',()=> switchTab(tab.dataset.tab));
+  });
+}
+function switchTab(tabName) {
+  currentTab = tabName;
+  document.querySelectorAll('.tab-item').forEach(t=>t.classList.toggle('active', t.dataset.tab===tabName));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById(tabName+'Page');
+  if (page) { page.classList.add('active'); page.scrollIntoView({behavior:'smooth',block:'start'}); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ======================== WEEK INFO ========================
+
+function calculateWeekInfo() {
+  const last = new Date(appData.lastPeriodDate);
+  const today = new Date();
+  const diffDays = Math.max(0, Math.floor((today-last)/(1000*60*60*24)));
+  const week = Math.min(Math.max(Math.floor(diffDays/7)+1, 1), 40);
+  const edd = new Date(last); edd.setDate(edd.getDate()+280);
+  const eddStr = edd.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
+  const daysLeft = Math.max(0, 280-diffDays);
+  return {week, edd:eddStr, daysLeft};
+}
+function getTrimesterLabel(w) { return w<=13?'孕早期':w<=28?'孕中期':'孕晚期'; }
+function getTrimesterKey(w) { return w<=13?'early':w<=28?'mid':'late'; }
+
+// ======================== HOME ========================
+
+function updateHomePage() {
+  if (!appData.lastPeriodDate) return;
+  const wi = calculateWeekInfo(), week = wi.week; selectedWeek = week;
+  const d = babyData[week]||babyData[40];
+  document.getElementById('babyEmoji').textContent = d.emoji;
+  document.getElementById('babySizeText').textContent = '本周像'+d.size;
+  document.getElementById('babySizeDesc').textContent = d.desc;
+
+  const pct = Math.min(week/40*100,100);
+  const circ = 2*Math.PI*50;
+  document.getElementById('progressRing').style.strokeDashoffset = circ - pct/100*circ;
+  document.getElementById('currentWeek').textContent = '第'+week+'周';
+  document.querySelector('.progress-week-label').textContent = getTrimesterLabel(week);
+  document.getElementById('eddDate').textContent = wi.edd;
+  document.getElementById('daysLeft').textContent = wi.daysLeft+'天';
+  updateInfoLists(week);
+}
+function updateInfoLists(week) {
+  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
+  document.getElementById('babyDevList').innerHTML = info.babyChanges.map(i=>'<li>'+i+'</li>').join('');
+  document.getElementById('momChangesList').innerHTML = info.momChanges.map(i=>'<li>'+i+'</li>').join('');
+  document.getElementById('weekTipsList').innerHTML = info.tips.map(i=>'<li>'+i+'</li>').join('');
+}
+
+// ======================== TRACKER ========================
+
+function updateTrackerPage() {
+  const wi = calculateWeekInfo();
+  const today = new Date();
+  document.getElementById('trackerDate').textContent = '今天是' + today.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('trackerEdd').textContent = '预产期：'+wi.edd;
+  const pct = Math.min(wi.week/40*100,100);
+  document.getElementById('trackerProgressFill').style.width = pct+'%';
+  document.getElementById('trackerProgressText').textContent = '孕期已完成 '+Math.round(pct)+'%';
+
+  const sel = document.getElementById('weekSelector'); sel.innerHTML = '';
+  for (let i=1;i<=40;i++) {
+    const btn = document.createElement('button');
+    btn.className = 'week-btn'+(i===wi.week?' active':'');
+    btn.textContent = '第'+i+'周';
+    btn.addEventListener('click',()=>showWeekDetail(i));
+    sel.appendChild(btn);
+  }
+  showWeekDetail(wi.week);
+}
+function showWeekDetail(week) {
+  selectedWeek = week;
+  document.querySelectorAll('.week-btn').forEach((b,i)=>b.classList.toggle('active',i+1===week));
+  const d = babyData[week]||babyData[40];
+  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
+  document.getElementById('weekDetail').innerHTML = `
+    <div class="baby-size-card" style="cursor:pointer" onclick="showWeekDetailModal(${week})">
+      <span class="baby-emoji">${d.emoji}</span>
+      <div class="baby-size-text">本周像${d.size}</div>
+      <div class="baby-size-desc">${d.desc}</div>
+    </div>
+    <div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">${info.babyChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
+    <div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">${info.momChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
+    <div class="info-card"><h3><span>💡</span> 温馨提醒</h3><ul class="info-list">${info.tips.map(i=>'<li>'+i+'</li>').join('')}</ul></div>`;
+}
+function showWeekDetailModal(week) {
+  const d = babyData[week]||babyData[40];
+  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
+  document.getElementById('weekDetailTitle').textContent = '第'+week+'周详情';
+  document.getElementById('weekDetailContent').innerHTML = `
+    <div class="week-detail-header"><span class="week-detail-emoji">${d.emoji}</span><div class="week-detail-title">${d.size}</div><div class="week-detail-subtitle">${d.desc}</div></div>
+    <div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">${info.babyChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
+    <div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">${info.momChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
+    <div class="info-card"><h3><span>💡</span> 温馨提醒</h3><ul class="info-list">${info.tips.map(i=>'<li>'+i+'</li>').join('')}</ul></div>`;
+  openModal('weekDetailModal');
+}
+
+// ======================== TODO ========================
+
+function updateTodoList() {
+  const c = document.getElementById('todoList');
+  const filt = document.querySelector('.filter-btn.active').dataset.filter;
+  let todos = appData.todos;
+  if(filt!=='all') todos = todos.filter(t=>t.stage===filt);
+  if(todos.length===0){
+    c.innerHTML='<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无待办事项</div></div>';
+    return;
+  }
+  c.innerHTML = todos.map(t=>`
+    <div class="todo-item${t.done?' done':''}" onclick="toggleTodo(${t.id})">
+      <div class="todo-checkbox">${t.done?'✓':''}</div>
+      <div class="todo-content">
+        <div class="todo-text">${t.title}</div>
+        <div class="todo-meta"><span class="todo-tag ${t.stage}">${t.stage==='early'?'孕早期':t.stage==='mid'?'孕中期':'孕晚期'}</span></div>
+      </div>
+    </div>`).join('');
+}
+function toggleTodo(id) {
+  const t = appData.todos.find(x=>x.id===id);
+  if(!t) return;
+  t.done = !t.done; saveData(); updateTodoList();
+  if(t.done) showConfetti();
+}
+function initFilterBtns() {
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); updateTodoList();
+    });
+  });
+}
+function showAddTodoModal() { document.getElementById('todoText').value=''; openModal('todoModal'); }
+function addTodo() {
+  const text = document.getElementById('todoText').value.trim();
+  const stage = document.getElementById('todoStage').value;
+  if(!text){ showToast('请输入待办事项内容'); return; }
+  appData.todos.push({id:Date.now(),title:text,stage,done:false});
+  saveData(); updateTodoList(); closeModal('todoModal'); showToast('✅ 已添加待办事项');
+}
+
+// ======================== HEALTH ========================
+
+function updateHealthPage() { updateWeightRecords(); updateBpRecords(); updateCheckupList(); }
+
+function updateWeightRecords() {
+  const c = document.getElementById('weightRecords');
+  if(appData.weightRecords.length===0){
+    c.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 添加第一条体重记录</div></div>';
+    document.getElementById('weightChart').innerHTML=''; document.getElementById('weightChartLabels').innerHTML='';
+    return;
+  }
+  const recent = appData.weightRecords.slice(-5).reverse();
+  c.innerHTML = recent.map(r=>'<div class="record-item"><span class="record-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="record-value">'+r.value+' kg</span></div>').join('');
+  updateWeightChart();
+}
+function updateWeightChart() {
+  const chart = document.getElementById('weightChart'), labels = document.getElementById('weightChartLabels');
+  if(appData.weightRecords.length<2){ chart.innerHTML=''; labels.innerHTML=''; return; }
+  const recent = appData.weightRecords.slice(-7), vals = recent.map(r=>r.value);
+  const max = Math.max(...vals), min = Math.min(...vals), range = max-min||1;
+  chart.innerHTML = recent.map((r,i)=>'<div class="chart-bar" style="height:'+(50+(r.value-min)/range*100)+'px;animation-delay:'+(i*0.08)+'s"></div>').join('');
+  labels.innerHTML = recent.map(r=>'<span class="chart-label">'+(new Date(r.date).getMonth()+1)+'/'+new Date(r.date).getDate()+'</span>').join('');
+}
+function showWeightModal(){ document.getElementById('weightValue').value=''; openModal('weightModal'); }
+function addWeight(){
+  const v = parseFloat(document.getElementById('weightValue').value);
+  if(isNaN(v)||v<=0){ showToast('请输入有效的体重值'); return; }
+  appData.weightRecords.push({date:new Date().toISOString(),value:v});
+  saveData(); updateWeightRecords(); closeModal('weightModal'); showToast('⚖️ 体重记录已保存');
+}
+
+function updateBpRecords() {
+  const c = document.getElementById('bpRecords');
+  if(appData.bpRecords.length===0){
+    c.innerHTML='<div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 添加第一条血压记录</div></div>';
+    return;
+  }
+  const recent = appData.bpRecords.slice(-5).reverse();
+  c.innerHTML = recent.map(r=>{
+    let status='good',text='正常';
+    if(r.high>=140||r.low>=90){ status='danger'; text='偏高'; }
+    else if(r.high<90||r.low<60){ status='warning'; text='偏低'; }
+    return '<div class="record-item"><span class="record-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="record-value '+status+'">'+r.high+'/'+r.low+' '+text+'</span></div>';
+  }).join('');
+}
+function showBpModal(){ document.getElementById('bpHigh').value=''; document.getElementById('bpLow').value=''; openModal('bpModal'); }
+function addBp(){
+  const h=parseInt(document.getElementById('bpHigh').value), l=parseInt(document.getElementById('bpLow').value);
+  if(isNaN(h)||isNaN(l)||h<=0||l<=0){ showToast('请输入有效的血压值'); return; }
+  appData.bpRecords.push({date:new Date().toISOString(),high:h,low:l});
+  saveData(); updateBpRecords(); closeModal('bpModal'); showToast('❤️ 血压记录已保存');
+}
+
+function updateCheckupList() {
+  const wi = calculateWeekInfo(), c = document.getElementById('checkupList');
+  c.innerHTML = checkupSchedule.map(item=>{
+    const wk = item.week;
+    const numWeeks = parseInt(wk);
+    let label = '孕'+wk+'周';
+    if (wk.includes('-')) label = '孕'+wk+'周';
+    let status = '';
+    if (!isNaN(numWeeks) && wi.week > numWeeks+2) status = '<span style="color:var(--success);font-weight:500">✓ 已完成</span>';
+    else if (!isNaN(numWeeks) && wi.week >= numWeeks-1 && wi.week <= numWeeks+1) status = '<span style="color:var(--primary);font-weight:500">● 即将到来</span>';
+    else if (wk.includes('-')) {
+      const [s,e] = wk.split('-').map(Number);
+      if (!isNaN(s) && !isNaN(e) && wi.week >= s && wi.week <= e) status = '<span style="color:var(--primary);font-weight:500">● 正在进行</span>';
+    }
+    return '<div class="record-item"><div><div class="record-value" style="font-size:14px;font-weight:600">'+item.name+'</div><div class="record-date">'+label+' · '+item.desc+'</div></div><div>'+status+'</div></div>';
+  }).join('');
+}
+
+// ======================== TIPS ========================
+
+function updateTipsPage() {
+  document.getElementById('tipsList').innerHTML = appData.tips.map(t=>`
+    <div class="tip-card" onclick="toggleLike(${t.id})">
+      <div class="tip-category"><span>🏷️</span> ${t.category}</div>
+      <div class="tip-title">${t.title}</div>
+      <div class="tip-content">${t.content}</div>
+      <div class="tip-footer">
+        <div class="tip-date"></div>
+        <div class="tip-like${t.liked?' liked':''}"><span>${t.liked?'❤️':'🤍'}</span><span>${t.liked?'已收藏':'收藏'}</span></div>
+      </div>
+    </div>`).join('');
+}
+function toggleLike(id) {
+  const t = appData.tips.find(x=>x.id===id);
+  if(!t) return;
+  t.liked=!t.liked; saveData(); updateTipsPage();
+}
+
+// ======================== TOAST ========================
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+// ======================== CONFETTI ========================
+
+function showConfetti() {
+  const colors = ['#FF6B9D','#FFB6C1','#FFA07A','#FFD700','#00B894','#74B9FF','#A29BFE','#FD79A8'];
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  for (let i=0;i<40;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100+'%';
+    piece.style.top = '-10px';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = (6+Math.random()*8)+'px';
+    piece.style.height = (6+Math.random()*8)+'px';
+    piece.style.borderRadius = Math.random()>0.5?'50%':'2px';
+    piece.style.animationDuration = (1.5+Math.random()*2)+'s';
+    piece.style.animationDelay = Math.random()*0.5+'s';
+    piece.style.transform = 'rotate('+Math.random()*360+'deg)';
+    container.appendChild(piece);
+  }
+  // 动态添加 CSS keyframes
+  const style = document.createElement('style');
+  style.textContent = '@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(0.3)}}';
+  document.head.appendChild(style);
+  setTimeout(()=>{ container.remove(); style.remove(); }, 4000);
+}
+
+// ======================== MODALS ========================
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('active');
+  // auto-focus
+  const input = el.querySelector('.modal-input');
+  if (input) setTimeout(()=>input.focus(), 350);
+}
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('active');
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('active'); });
+});
+
+// Keyboard: Enter to submit, Escape to close
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
+  }
+  if(e.key==='Enter'){
+    const active = document.querySelector('.modal-overlay.active');
+    if(!active) return;
+    const confirmBtn = active.querySelector('.modal-btn.confirm');
+    if(confirmBtn && (document.activeElement?.classList.contains('modal-input') || document.activeElement?.tagName==='SELECT')) {
+      confirmBtn.click();
+    }
+  }
+});
+</script>
 </body>
 </html>
