@@ -1,1078 +1,544 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!DOCTYPE html><html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <title>怀孕助手 - 准妈妈的贴心伙伴</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary: #FF6B9D;
-  --primary-light: #FF8FB1;
-  --primary-dark: #E8558A;
-  --secondary: #FFB6C1;
-  --accent: #FFA07A;
-  --bg: #FFF5F7;
-  --card: #FFFFFF;
-  --text: #2D3436;
-  --text-secondary: #636E72;
-  --text-light: #B2BEC3;
-  --success: #00B894;
-  --warning: #FDCB6E;
-  --danger: #E74C3C;
-  --shadow: rgba(255, 107, 157, 0.15);
-  --shadow-lg: 0 8px 32px rgba(255, 107, 157, 0.2);
-  --radius-sm: 10px;
-  --radius: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top: env(safe-area-inset-top, 0px);
-  --tab-height: 68px;
-}
+:root{--primary:#FF6B9D;--primary-light:#FF8FB1;--primary-dark:#E8558A;--secondary:#FFB6C1;--accent:#FFA07A;--bg:#FFF5F7;--card:#FFF;--text:#2D3436;--text2:#636E72;--text3:#B2BEC3;--success:#00B894;--warning:#FDCB6E;--danger:#E74C3C;--star:#FFD700;--radius:16px;--radius-lg:20px;--radius-xl:24px;--safe-bottom:env(safe-area-inset-bottom,0px);--safe-top:env(safe-area-inset-top,0px);--tab-h:68px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.app{max-width:430px;margin:0 auto;min-height:100vh;min-height:-webkit-fill-available;background:var(--bg);position:relative;padding-bottom:calc(var(--tab-h) + var(--safe-bottom) + 8px)}
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--primary) 0%,#FF6B9D 30%,#FF8FB1 60%,var(--accent) 100%);background-size:200% 200%;animation:gradientShift 8s ease infinite;padding:20px;padding-top:calc(44px + var(--safe-top));padding-bottom:32px;color:#fff;position:relative;overflow:hidden}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.header::before{content:'';position:absolute;top:-60%;right:-20%;width:280px;height:280px;background:rgba(255,255,255,.08);border-radius:50%;animation:floatBubble 6s ease-in-out infinite}
+.header::after{content:'';position:absolute;bottom:-40%;left:-10%;width:200px;height:200px;background:rgba(255,255,255,.06);border-radius:50%;animation:floatBubble 8s ease-in-out infinite reverse}
+@keyframes floatBubble{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+.header-content{position:relative;z-index:1}
+.greeting{font-size:15px;opacity:.92;margin-bottom:6px;font-weight:300}
+.header h1{font-size:26px;font-weight:700;letter-spacing:1px}
 
-body {
-  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* SETUP */
+.setup-container{padding:0 20px;margin-top:-20px;position:relative;z-index:2;animation:slideUp .5s ease}
+.setup-card{background:var(--card);border-radius:var(--radius-lg);padding:28px 24px;box-shadow:0 8px 32px rgba(255,107,157,.2)}
+.setup-card h2{font-size:20px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.setup-card p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6}
+.date-input-group{margin-bottom:20px}
+.date-input-group label{display:block;font-size:14px;font-weight:500;color:var(--text2);margin-bottom:10px}
+.date-input{width:100%;padding:16px;border:2px solid #F0F0F0;border-radius:12px;font-size:16px;font-family:inherit;transition:all .3s ease;background:#FAFAFA;-webkit-appearance:none}
+.date-input:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(255,107,157,.12)}
+.btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .25s ease;box-shadow:0 4px 16px rgba(255,107,157,.35)}
+.btn:active{transform:scale(.97)}
+.btn-sm{padding:10px 20px;width:auto;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary);box-shadow:none}
+.btn-success{background:linear-gradient(135deg,var(--success) 0%,#00CEA0 100%);box-shadow:0 4px 16px rgba(0,184,148,.35)}
+.btn-orange{background:linear-gradient(135deg,#FF9800 0%,#FFB74D 100%);box-shadow:0 4px 16px rgba(255,152,0,.35)}
 
-.app {
-  max-width: 430px;
-  margin: 0 auto;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  background: var(--bg);
-  position: relative;
-  padding-bottom: calc(var(--tab-height) + var(--safe-bottom) + 8px);
-}
+/* MAIN */
+.main-content{display:none;padding:0}
+.main-content.active{display:block}
+.page{display:none;padding:20px;animation:pageIn .35s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-/* ===== HEADER ===== */
-.header {
-  background: linear-gradient(135deg, var(--primary) 0%, #FF6B9D 30%, #FF8FB1 60%, var(--accent) 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
-  padding: 20px;
-  padding-top: calc(44px + var(--safe-top));
-  padding-bottom: 32px;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-.header::before {
-  content: ''; position: absolute; top: -60%; right: -20%;
-  width: 280px; height: 280px;
-  background: rgba(255,255,255,0.08); border-radius: 50%;
-  animation: floatBubble 6s ease-in-out infinite;
-}
-.header::after {
-  content: ''; position: absolute; bottom: -40%; left: -10%;
-  width: 200px; height: 200px;
-  background: rgba(255,255,255,0.06); border-radius: 50%;
-  animation: floatBubble 8s ease-in-out infinite reverse;
-}
-@keyframes floatBubble {
-  0%,100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-20px) scale(1.05); }
-}
-.header-content { position: relative; z-index: 1; }
-.greeting { font-size: 15px; opacity: 0.92; margin-bottom: 6px; font-weight: 300; }
-.header h1 { font-size: 26px; font-weight: 700; letter-spacing: 1px; }
-.header h1::after {
-  content: ' 🌸';
-  font-size: 22px;
-}
+/* HOME */
+.baby-card{background:linear-gradient(135deg,#FFF0F3 0%,#FFF8FA 100%);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;text-align:center;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(255,107,157,.1)}
+.baby-card::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:rgba(255,107,157,.08);border-radius:50%}
+.baby-emoji{font-size:72px;margin-bottom:12px;animation:floatBaby 2.5s ease-in-out infinite;display:block}
+@keyframes floatBaby{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.baby-size-text{font-size:20px;font-weight:600;margin-bottom:8px}
+.baby-size-desc{font-size:14px;color:var(--text2);line-height:1.6}
+.progress-section{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.progress-ring-container{position:relative;width:120px;height:120px;flex-shrink:0}
+.progress-ring{transform:rotate(-90deg)}
+.progress-ring-bg{fill:none;stroke:#FFE4E9;stroke-width:10}
+.progress-ring-fill{fill:none;stroke:url(#g);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 4px rgba(255,107,157,.3))}
+.progress-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.progress-week{font-size:28px;font-weight:700;color:var(--primary);line-height:1}
+.progress-week-label{font-size:11px;color:var(--text2);margin-top:3px}
+.progress-info{flex:1}
+.progress-info h3{font-size:16px;margin-bottom:14px;font-weight:600}
+.progress-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-item{background:#fff;padding:12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:3px}
+.stat-value{font-size:15px;font-weight:600}
+.stat-value.highlight{color:var(--primary)}
 
-/* ===== SETUP ===== */
-.setup-container { padding: 0 20px; margin-top: -20px; position: relative; z-index: 2; animation: slideUp 0.5s ease; }
-.setup-card { background: var(--card); border-radius: var(--radius-lg); padding: 28px 24px; box-shadow: var(--shadow-lg); }
-.setup-card h2 { font-size: 20px; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-.setup-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
-.date-input-group { margin-bottom: 20px; }
-.date-input-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
-.date-input {
-  width: 100%; padding: 16px; border: 2px solid #F0F0F0; border-radius: 12px;
-  font-size: 16px; font-family: inherit; transition: all 0.3s ease; background: #FAFAFA;
-  -webkit-appearance: none; appearance: none;
-}
-.date-input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(255,107,157,0.12); }
+.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title h2{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.section-title .more{font-size:13px;color:var(--primary);cursor:pointer;font-weight:500;padding:4px 8px;border-radius:8px;transition:background .2s}
+.section-title .more:active{background:rgba(255,107,157,.1)}
 
-.btn {
-  width: 100%; padding: 16px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-  font-family: inherit; cursor: pointer; transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(255,107,157,0.35);
-}
-.btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(255,107,157,0.25); }
+/* HOME TODO SECTION */
+.home-todo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.home-todo-header .todo-progress{font-size:13px;color:var(--text2)}
+.home-todo-list .todo-mini-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border-radius:12px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:all .2s}
+.home-todo-list .todo-mini-item:active{transform:scale(.98)}
+.home-todo-list .todo-mini-item .cb{width:20px;height:20px;border:2px solid #E0E0E0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.home-todo-list .todo-mini-item.done{opacity:.5}
+.home-todo-list .todo-mini-item.done .cb{background:var(--success);border-color:var(--success);color:#fff}
+.home-todo-list .todo-mini-item.done .cb-text{text-decoration:line-through;color:var(--text2)}
+.home-todo-list .todo-mini-item .cb-text{font-size:14px;flex:1;line-height:1.3}
 
-/* ===== MAIN CONTENT ===== */
-.main-content { display: none; padding: 0; }
-.main-content.active { display: block; }
-.page { display: none; padding: 20px; animation: pageIn 0.35s ease; }
-.page.active { display: block; }
-@keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.info-card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.info-card h3{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.info-list{list-style:none}
+.info-list li{padding:10px 0;font-size:14px;line-height:1.6;border-bottom:1px solid #F5F5F5;display:flex;align-items:flex-start;gap:10px}
+.info-list li:last-child{border-bottom:none}
+.info-list li::before{content:'';width:6px;height:6px;background:var(--primary);border-radius:50%;flex-shrink:0;margin-top:9px}
 
-/* ===== HOME ===== */
-.baby-size-card {
-  background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%);
-  border-radius: var(--radius-lg); padding: 28px; margin-bottom: 20px;
-  text-align: center; position: relative; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(255,107,157,0.1);
-}
-.baby-size-card::before {
-  content: ''; position: absolute; top: -30px; right: -30px;
-  width: 140px; height: 140px;
-  background: rgba(255,107,157,0.08); border-radius: 50%;
-}
-.baby-emoji { font-size: 72px; margin-bottom: 12px; animation: floatBaby 2.5s ease-in-out infinite; display: block; }
-@keyframes floatBaby { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.baby-size-text { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.baby-size-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+/* TAB BAR */
+.tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);display:flex;justify-content:space-around;padding:6px 0 calc(6px + var(--safe-bottom));box-shadow:0 -1px 0 rgba(0,0,0,.06),0 -4px 20px rgba(0,0,0,.06);z-index:100}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;cursor:pointer;transition:all .2s ease;border-radius:12px;position:relative;-webkit-touch-callout:none;user-select:none}
+.tab-item:active{opacity:.7}
+.tab-icon{font-size:22px;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.tab-item.active .tab-icon{transform:scale(1.2)}
+.tab-label{font-size:10px;color:var(--text2);font-weight:500;transition:color .2s}
+.tab-item.active .tab-label{color:var(--primary);font-weight:600}
+.tab-item.active::after{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--primary);border-radius:0 0 3px 3px}
 
-.progress-section { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
-.progress-ring-container { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
-.progress-ring { transform: rotate(-90deg); }
-.progress-ring-bg { fill: none; stroke: #FFE4E9; stroke-width: 10; }
-.progress-ring-fill { fill: none; stroke: url(#progressGradient); stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); filter: drop-shadow(0 2px 4px rgba(255,107,157,0.3)); }
-.progress-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
-.progress-week { font-size: 28px; font-weight: 700; color: var(--primary); line-height: 1; }
-.progress-week-label { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
-.progress-info { flex: 1; }
-.progress-info h3 { font-size: 16px; color: var(--text); margin-bottom: 14px; font-weight: 600; }
-.progress-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stat-item { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; }
-.stat-value { font-size: 15px; font-weight: 600; color: var(--text); }
-.stat-value.highlight { color: var(--primary); }
+/* TRACKER */
+.tracker-header{background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%);border-radius:var(--radius-lg);padding:24px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden}
+.tracker-header::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:rgba(255,255,255,.1);border-radius:50%}
+.tracker-date{font-size:14px;opacity:.9;margin-bottom:4px}
+.tracker-edd{font-size:20px;font-weight:600;margin-bottom:16px}
+.tracker-bar{height:8px;background:rgba(255,255,255,.3);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.tracker-fill{height:100%;background:#fff;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.tracker-pct{font-size:12px;opacity:.9}
+.week-selector{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+.week-selector::-webkit-scrollbar{display:none}
+.week-btn{flex-shrink:0;padding:10px 18px;background:#fff;border:2px solid #F0F0F0;border-radius:20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .25s ease;white-space:nowrap;scroll-snap-align:center;font-family:inherit}
+.week-btn.active{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);border-color:transparent;color:#fff;transform:scale(1.06);box-shadow:0 4px 12px rgba(255,107,157,.3)}
+.week-btn:active:not(.active){transform:scale(.95)}
 
-.section-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.section-title h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-.section-title .more { font-size: 13px; color: var(--primary); cursor: pointer; font-weight: 500; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
-.section-title .more:active { background: rgba(255,107,157,0.1); }
+/* DOCTOR */
+.doctor-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.doctor-tabs::-webkit-scrollbar{display:none}
+.doc-tab{padding:8px 18px;background:#fff;border:1.5px solid #F0F0F0;border-radius:20px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;font-family:inherit;flex-shrink:0}
+.doc-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 3px 10px rgba(255,107,157,.25)}
+.doc-tab:active{transform:scale(.95)}
+.doc-card{background:#fff;border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);display:flex;gap:16px;cursor:pointer;transition:all .25s;position:relative}
+.doc-card:active{transform:scale(.98)}
+.doc-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--primary-light),var(--accent));display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;color:#fff;font-weight:600}
+.doc-status{position:absolute;top:16px;right:16px;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:500}
+.doc-status.online{background:#E8F5E9;color:var(--success)}
+.doc-status.offline{background:#F5F5F5;color:var(--text3)}
+.doc-info{flex:1}
+.doc-name{font-size:16px;font-weight:600;margin-bottom:3px}
+.doc-title{font-size:12px;color:var(--text2);margin-bottom:2px}
+.doc-hospital{font-size:12px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.doc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.doc-tag{padding:2px 8px;background:#FFF0F3;color:var(--primary);font-size:10px;border-radius:8px;font-weight:500}
+.doc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.doc-fee{font-size:15px;font-weight:700;color:var(--primary)}
+.doc-fee small{font-weight:400;font-size:12px;color:var(--text2)}
+.doc-rating{font-size:12px;color:var(--star)}
 
-.info-card { background: var(--card); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-.info-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.info-list { list-style: none; }
-.info-list li { padding: 10px 0; font-size: 14px; color: var(--text); line-height: 1.6; border-bottom: 1px solid #F5F5F5; display: flex; align-items: flex-start; gap: 10px; }
-.info-list li:last-child { border-bottom: none; }
-.info-list li::before { content: ''; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; flex-shrink: 0; margin-top: 9px; }
+/* DOCTOR DETAIL PAGE */
+.doc-detail{display:none;padding:0;animation:pageIn .35s ease}
+.doc-detail.active{display:block}
+.doc-back{display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-size:14px;font-weight:500;cursor:pointer;padding:4px 0;margin-bottom:16px}
+.doc-back:active{opacity:.7}
+.doc-detail-header{background:linear-gradient(135deg,#FFF0F3 0%,#FFF8FA 100%);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-bottom:16px}
+.doc-detail-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;font-weight:600;margin:0 auto 12px}
+.doc-detail-name{font-size:22px;font-weight:700;margin-bottom:4px}
+.doc-detail-title{font-size:14px;color:var(--text2);margin-bottom:8px}
+.doc-detail-hospital{font-size:14px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px}
+.doc-detail-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px}
+.doc-detail-footer{display:flex;gap:12px;justify-content:center}
+.doc-detail-rating{display:flex;gap:20px;justify-content:center;margin-bottom:16px}
+.doc-detail-rating .r-item{text-align:center}
+.doc-detail-rating .r-num{font-size:20px;font-weight:700;color:var(--text)}
+.doc-detail-rating .r-label{font-size:11px;color:var(--text2);margin-top:2px}
 
-/* ===== TAB BAR ===== */
-.tab-bar {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px; background: rgba(255,255,255,0.96);
-  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
-  display: flex; justify-content: space-around;
-  padding: 6px 0 calc(6px + var(--safe-bottom));
-  box-shadow: 0 -1px 0 rgba(0,0,0,0.06), 0 -4px 20px rgba(0,0,0,0.06);
-  z-index: 100;
-}
-.tab-item {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: 6px 14px; cursor: pointer; transition: all 0.2s ease;
-  border-radius: 12px; position: relative;
-  -webkit-touch-callout: none; user-select: none;
-}
-.tab-item:active { opacity: 0.7; }
-.tab-icon { font-size: 22px; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
-.tab-item.active .tab-icon { transform: scale(1.2); }
-.tab-label { font-size: 10px; color: var(--text-secondary); font-weight: 500; transition: color 0.2s; }
-.tab-item.active .tab-label { color: var(--primary); font-weight: 600; }
-.tab-item.active::after {
-  content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-  width: 20px; height: 3px; background: var(--primary); border-radius: 0 0 3px 3px;
-}
+/* Schedule */
+.schedule-section{margin-bottom:16px}
+.schedule-date{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding:4px 0}
+.schedule-date::-webkit-scrollbar{display:none}
+.date-btn{padding:10px 14px;background:#fff;border:2px solid #F0F0F0;border-radius:12px;font-size:13px;text-align:center;cursor:pointer;transition:all .2s;flex-shrink:0;min-width:60px;font-family:inherit}
+.date-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.date-btn .dow{font-weight:600;display:block;font-size:11px}
+.date-btn .dom{font-size:10px;opacity:.8;display:block;margin-top:2px}
+.date-btn.active .dom{opacity:.9}
+.time-slots{display:flex;flex-wrap:wrap;gap:8px}
+.time-slot{padding:10px 16px;background:#fff;border:2px solid #F0F0F0;border-radius:20px;font-size:13px;color:var(--text);cursor:pointer;transition:all .2s;font-family:inherit}
+.time-slot.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.time-slot:active{transform:scale(.95)}
+.time-slot.full{border-color:#F0F0F0;background:#F9F9F9;color:var(--text3);text-decoration:line-through;cursor:not-allowed}
 
-/* ===== TRACKER ===== */
-.tracker-header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  border-radius: var(--radius-lg); padding: 24px; color: white; margin-bottom: 20px;
-  position: relative; overflow: hidden;
-}
-.tracker-header::before { content: ''; position: absolute; top: -50%; right: -30%; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-.tracker-date { font-size: 14px; opacity: 0.9; margin-bottom: 4px; }
-.tracker-edd { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
-.tracker-progress-bar { height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
-.tracker-progress-fill { height: 100%; background: white; border-radius: 4px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-.tracker-progress-text { font-size: 12px; opacity: 0.9; }
+/* HEALTH */
+.health-card{background:#fff;border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.health-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.health-card-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.health-card-title span{font-size:22px}
+.add-btn{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 3px 10px rgba(255,107,157,.25)}
+.add-btn:active{transform:scale(.9)}
+.health-records{max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rec-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F5F5F5}
+.rec-item:last-child{border-bottom:none}
+.rec-date{font-size:13px;color:var(--text2)}
+.rec-val{font-size:16px;font-weight:600}
+.rec-val.good{color:var(--success)}
+.rec-val.warning{color:#F39C12}
+.rec-val.danger{color:var(--danger)}
+.weight-chart{height:160px;display:flex;align-items:flex-end;justify-content:space-around;padding:10px 0 0;border-bottom:1px solid #F0F0F0}
+.chart-bar{width:28px;min-height:6px;background:linear-gradient(to top,var(--primary),var(--primary-light));border-radius:5px 5px 0 0;transition:height .6s cubic-bezier(.4,0,.2,1);animation:barGrow .6s ease-out backwards;border:1px solid rgba(255,255,255,.3)}
+@keyframes barGrow{from{height:6px}}
+.chart-labels{display:flex;justify-content:space-around;padding:8px 0 4px}
+.chart-label{font-size:10px;color:var(--text2);width:28px;text-align:center}
 
-.week-selector {
-  display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto;
-  padding: 4px 0; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
-}
-.week-selector::-webkit-scrollbar { display: none; }
-.week-btn {
-  flex-shrink: 0; padding: 10px 18px; background: white; border: 2px solid #F0F0F0;
-  border-radius: 20px; font-size: 13px; font-weight: 500; color: var(--text-secondary);
-  cursor: pointer; transition: all 0.25s ease; white-space: nowrap;
-  scroll-snap-align: center;
-}
-.week-btn.active { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-color: transparent; color: white; transform: scale(1.06); box-shadow: 0 4px 12px rgba(255,107,157,0.3); }
-.week-btn:active:not(.active) { transform: scale(0.95); }
+/* TIPS */
+.tip-card{background:#fff;border-radius:var(--radius-lg);padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.04);cursor:pointer;transition:all .25s}
+.tip-card:active{transform:scale(.98)}
+.tip-cat{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:#FFF0F3;color:var(--primary);font-size:12px;font-weight:500;border-radius:20px;margin-bottom:10px}
+.tip-title{font-size:17px;font-weight:600;margin-bottom:10px;line-height:1.5}
+.tip-content{font-size:14px;color:var(--text2);line-height:1.7}
+.tip-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid #F5F5F5}
+.tip-footer .tip-date{font-size:12px;color:var(--text2)}
+.tip-like{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);transition:all .2s;padding:4px 8px;border-radius:8px}
+.tip-like:active{background:rgba(255,107,157,.08)}
+.tip-like.liked{color:var(--danger)}
 
-/* ===== TODO ===== */
-.todo-filters { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.todo-filters::-webkit-scrollbar { display: none; }
-.filter-btn {
-  padding: 8px 18px; background: white; border: 1.5px solid #F0F0F0; border-radius: 20px;
-  font-size: 13px; color: var(--text-secondary); font-weight: 500; font-family: inherit;
-  cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
-}
-.filter-btn.active { background: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 3px 10px rgba(255,107,157,0.25); }
-.filter-btn:active { transform: scale(0.95); }
-.todo-item {
-  background: white; border-radius: var(--radius); padding: 16px; margin-bottom: 10px;
-  display: flex; align-items: flex-start; gap: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.25s ease; cursor: pointer;
-}
-.todo-item:active { transform: scale(0.98); }
-.todo-item.done { opacity: 0.5; }
-.todo-item.done .todo-text { text-decoration: line-through; color: var(--text-secondary); }
-.todo-checkbox {
-  width: 24px; height: 24px; border: 2px solid #E0E0E0; border-radius: 50%;
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); margin-top: 2px;
-}
-.todo-item.done .todo-checkbox { background: var(--success); border-color: var(--success); color: white; transform: scale(1.1); }
-.todo-content { flex: 1; }
-.todo-text { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
-.todo-meta { display: flex; gap: 8px; }
-.todo-tag { padding: 3px 10px; background: #FFF0F3; color: var(--primary); font-size: 11px; border-radius: 10px; font-weight: 500; }
-.todo-tag.early { background: #E8F5E9; color: #4CAF50; }
-.todo-tag.mid { background: #FFF3E0; color: #FF9800; }
-.todo-tag.late { background: #E3F2FD; color: #2196F3; }
+/* TOAST */
+.toast{position:fixed;top:calc(60px + var(--safe-top));left:50%;transform:translateX(-50%) translateY(-80px);z-index:3000;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:500;color:#fff;background:rgba(45,52,54,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;max-width:85%;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ===== HEALTH ===== */
-.health-card { background: white; border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-.health-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.health-card-title { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; }
-.health-card-title span { font-size: 22px; }
-.add-record-btn {
-  width: 34px; height: 34px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-  color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.25s ease; box-shadow: 0 3px 10px rgba(255,107,157,0.25);
-}
-.add-record-btn:active { transform: scale(0.9); }
-.health-records-list { max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.record-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F5F5F5; }
-.record-item:last-child { border-bottom: none; }
-.record-date { font-size: 13px; color: var(--text-secondary); }
-.record-value { font-size: 16px; font-weight: 600; }
-.record-value.good { color: var(--success); }
-.record-value.warning { color: #F39C12; }
-.record-value.danger { color: var(--danger); }
+/* CONFETTI */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2000;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:cfFall linear forwards}
+@keyframes cfFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(.3)}}
 
-/* Weight Chart */
-.weight-chart { height: 160px; display: flex; align-items: flex-end; justify-content: space-around; padding: 10px 0 0; border-bottom: 1px solid #F0F0F0; position: relative; }
-.weight-chart::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #E8E8E8; }
-.chart-bar {
-  width: 28px; min-height: 6px;
-  background: linear-gradient(to top, var(--primary), var(--primary-light));
-  border-radius: 5px 5px 0 0; transition: height 0.6s cubic-bezier(0.4,0,0.2,1);
-  animation: barGrow 0.6s ease-out backwards;
-  position: relative; border: 1px solid rgba(255,255,255,0.3);
-}
-.chart-bar:hover { opacity: 0.85; }
-@keyframes barGrow { from { height: 6px; } }
-.chart-labels { display: flex; justify-content: space-around; padding: 8px 0 4px; }
-.chart-label { font-size: 10px; color: var(--text-secondary); width: 28px; text-align: center; }
+/* MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;z-index:1000;opacity:0;visibility:hidden;transition:all .3s ease}
+.modal-overlay.active{opacity:1;visibility:visible}
+.modal{background:#fff;width:100%;max-width:430px;border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:24px;padding-bottom:calc(24px + var(--safe-bottom));transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);max-height:92vh;overflow-y:auto}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:#DDD;border-radius:2px;margin:0 auto 16px}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:18px;font-weight:600}
+.modal-close{width:32px;height:32px;background:#F5F5F5;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:active{background:#E0E0E0}
+.modal-input{width:100%;padding:14px 16px;border:2px solid #F0F0F0;border-radius:12px;font-size:16px;font-family:inherit;margin-bottom:16px;transition:all .25s;background:#FAFAFA;-webkit-appearance:none}
+.modal-input:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(255,107,157,.1)}
+.modal-btns{display:flex;gap:12px}
+.modal-btn{flex:1;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.modal-btn:active{transform:scale(.97)}
+.modal-btn.cancel{background:#F5F5F5;color:var(--text2)}
+.modal-btn.confirm{background:var(--primary);color:#fff;box-shadow:0 3px 12px rgba(255,107,157,.3)}
 
-/* ===== TIPS ===== */
-.tip-card { background: white; border-radius: var(--radius-lg); padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: all 0.25s ease; }
-.tip-card:active { transform: scale(0.98); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-.tip-category { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: #FFF0F3; color: var(--primary); font-size: 12px; font-weight: 500; border-radius: 20px; margin-bottom: 10px; }
-.tip-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
-.tip-content { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
-.tip-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid #F5F5F5; }
-.tip-date { font-size: 12px; color: var(--text-secondary); }
-.tip-like { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); transition: all 0.2s ease; padding: 4px 8px; border-radius: 8px; }
-.tip-like:active { background: rgba(255,107,157,0.08); }
-.tip-like.liked { color: #E74C3C; }
+/* BOOKING CONFIRM MODAL */
+.booking-summary{background:#FAFAFA;border-radius:12px;padding:16px;margin-bottom:16px}
+.booking-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F0F0F0;font-size:14px}
+.booking-row:last-child{border-bottom:none}
+.booking-row .b-label{color:var(--text2)}
+.booking-row .b-value{font-weight:600;color:var(--text)}
+.booking-row .b-value.primary{color:var(--primary)}
 
-/* ===== TOAST ===== */
-.toast {
-  position: fixed; top: calc(60px + var(--safe-top)); left: 50%; transform: translateX(-50%) translateY(-80px);
-  z-index: 3000; padding: 12px 24px; border-radius: var(--radius);
-  font-size: 14px; font-weight: 500; color: white;
-  background: rgba(45,52,54,0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: none; white-space: nowrap; max-width: 85%;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* EMPTY */
+.empty-state{text-align:center;padding:36px 20px}
+.empty-icon{font-size:56px;margin-bottom:12px;opacity:.5}
+.empty-text{font-size:14px;color:var(--text2)}
 
-/* ===== CONFETTI ===== */
-.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000; overflow: hidden; }
-.confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; }
-
-/* ===== MODAL ===== */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-  display: flex; align-items: flex-end; justify-content: center;
-  z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
-}
-.modal-overlay.active { opacity: 1; visibility: visible; }
-.modal {
-  background: white; width: 100%; max-width: 430px;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  padding: 24px; padding-bottom: calc(24px + var(--safe-bottom));
-  transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-}
-.modal-overlay.active .modal { transform: translateY(0); }
-.modal-handle { width: 36px; height: 4px; background: #DDD; border-radius: 2px; margin: 0 auto 16px; }
-.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.modal-title { font-size: 18px; font-weight: 600; }
-.modal-close { width: 32px; height: 32px; background: #F5F5F5; border: none; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-.modal-close:active { background: #E0E0E0; }
-.modal-input {
-  width: 100%; padding: 14px 16px; border: 2px solid #F0F0F0; border-radius: 12px;
-  font-size: 16px; font-family: inherit; margin-bottom: 16px; transition: all 0.25s ease;
-  background: #FAFAFA; -webkit-appearance: none; appearance: none;
-}
-.modal-input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(255,107,157,0.1); }
-.modal-buttons { display: flex; gap: 12px; }
-.modal-btn {
-  flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s ease; font-family: inherit;
-}
-.modal-btn:active { transform: scale(0.97); }
-.modal-btn.cancel { background: #F5F5F5; color: var(--text-secondary); }
-.modal-btn.confirm { background: var(--primary); color: white; box-shadow: 0 3px 12px rgba(255,107,157,0.3); }
-
-.week-detail-modal { max-height: 85vh; overflow-y: auto; }
-.week-detail-content { padding-bottom: 20px; }
-.week-detail-header { text-align: center; padding: 24px; background: linear-gradient(135deg, #FFF0F3 0%, #FFF8FA 100%); border-radius: var(--radius); margin-bottom: 16px; }
-.week-detail-emoji { font-size: 80px; margin-bottom: 12px; display: block; }
-.week-detail-title { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
-.week-detail-subtitle { font-size: 14px; color: var(--text-secondary); }
-
-/* ===== EMPTY STATE ===== */
-.empty-state { text-align: center; padding: 36px 20px; }
-.empty-icon { font-size: 56px; margin-bottom: 12px; opacity: 0.5; }
-.empty-text { font-size: 14px; color: var(--text-secondary); }
-
-/* ===== RESPONSIVE ADAPTATION ===== */
-@media (max-width: 430px) {
-  .app { max-width: 100%; }
-  .tab-bar { max-width: 100%; }
-}
-@media (min-width: 431px) {
-  .app { border-left: 1px solid rgba(0,0,0,0.06); border-right: 1px solid rgba(0,0,0,0.06); min-height: 100vh; }
-  body { background: #F2F2F7; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-
-.hidden { display: none !important; }
+@media(max-width:430px){.app,.tab-bar,.modal{max-width:100%}}
+@media(min-width:431px){body{background:#F2F2F7}.app{border-left:1px solid rgba(0,0,0,.06);border-right:1px solid rgba(0,0,0,.06)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-
 <div class="app">
-  <!-- Header -->
   <div class="header">
-    <div class="header-content">
-      <p class="greeting" id="greeting">🌸 美好的一天</p>
-      <h1>怀孕助手</h1>
-    </div>
+    <div class="header-content"><p class="greeting" id="greeting">🌸 美好的一天</p><h1>怀孕助手</h1></div>
   </div>
 
-  <!-- Setup -->
+  <!-- SETUP -->
   <div class="setup-container" id="setupContainer">
     <div class="setup-card">
       <h2><span>🌸</span> 开启您的孕期之旅</h2>
-      <p>请输入末次月经的第一天日期，我会帮您计算预产期和孕期进度，全程陪伴您的孕育之路。</p>
-      <div class="date-input-group">
-        <label>📅 末次月经日期</label>
-        <input type="date" class="date-input" id="lastPeriodDate">
-      </div>
+      <p>输入末次月经第一天，自动计算预产期和孕期进度</p>
+      <div class="date-input-group"><label>📅 末次月经</label><input type="date" class="date-input" id="lastPeriodDate"></div>
       <button class="btn" id="startBtn">✨ 开始使用</button>
     </div>
   </div>
 
-  <!-- Main Content -->
+  <!-- MAIN -->
   <div class="main-content" id="mainContent">
-    <!-- 1. HOME -->
+    <!-- HOME -->
     <div class="page active" id="homePage">
-      <div class="baby-size-card">
-        <span class="baby-emoji" id="babyEmoji">🍋</span>
-        <div class="baby-size-text" id="babySizeText">本周像一颗柠檬</div>
-        <div class="baby-size-desc" id="babySizeDesc">胎儿身长约3-4厘米，体重约4-5克，开始有心跳啦</div>
-      </div>
-
+      <div class="baby-card"><span class="baby-emoji" id="babyEmoji">🍋</span><div class="baby-size-text" id="babySizeText">本周像一颗柠檬</div><div class="baby-size-desc" id="babySizeDesc">——</div></div>
       <div class="progress-section">
-        <div class="progress-ring-container">
-          <svg class="progress-ring" width="120" height="120" viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#FF6B9D"/>
-                <stop offset="100%" stop-color="#FFA07A"/>
-              </linearGradient>
-            </defs>
-            <circle class="progress-ring-bg" cx="60" cy="60" r="50"/>
-            <circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="50" stroke-dasharray="314.159" stroke-dashoffset="314.159"/>
-          </svg>
-          <div class="progress-center">
-            <div class="progress-week" id="currentWeek">第12周</div>
-            <div class="progress-week-label">孕早期</div>
-          </div>
-        </div>
-        <div class="progress-info">
-          <h3>孕期进度</h3>
-          <div class="progress-stats">
-            <div class="stat-item"><div class="stat-label">预产期</div><div class="stat-value" id="eddDate">2025-10-15</div></div>
-            <div class="stat-item"><div class="stat-label">剩余天数</div><div class="stat-value highlight" id="daysLeft">196天</div></div>
-          </div>
-        </div>
+        <div class="progress-ring-container"><svg class="progress-ring" width="120" height="120" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF6B9D"/><stop offset="100%" stop-color="#FFA07A"/></linearGradient></defs><circle class="progress-ring-bg" cx="60" cy="60" r="50"/><circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="50" stroke-dasharray="314.159" stroke-dashoffset="314.159"/></svg><div class="progress-center"><div class="progress-week" id="currentWeek">第0周</div><div class="progress-week-label">——</div></div></div>
+        <div class="progress-info"><h3>孕期进度</h3><div class="progress-stats"><div class="stat-item"><div class="stat-label">预产期</div><div class="stat-value" id="eddDate">——</div></div><div class="stat-item"><div class="stat-label">剩余</div><div class="stat-value highlight" id="daysLeft">——</div></div></div></div>
       </div>
-
-      <div class="section-title">
-        <h2><span>📋</span> 本周重点</h2>
-        <span class="more" onclick="switchTab('tracker')">查看全部 ›</span>
-      </div>
-      <div class="info-card">
-        <h3><span>👶</span> 胎儿发育</h3>
-        <ul class="info-list" id="babyDevList"></ul>
-      </div>
-      <div class="info-card">
-        <h3><span>💕</span> 妈妈变化</h3>
-        <ul class="info-list" id="momChangesList"></ul>
-      </div>
-      <div class="info-card">
-        <h3><span>⚠️</span> 本周提醒</h3>
-        <ul class="info-list" id="weekTipsList"></ul>
-      </div>
+      <div class="section-title"><h2><span>📋</span> 本周重点</h2><span class="more" onclick="switchTab('tracker')">查看全部 ›</span></div>
+      <div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list" id="babyDevList"></ul></div>
+      <div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list" id="momChangesList"></ul></div>
+      <!-- Home Todos -->
+      <div class="section-title"><h2><span>✅</span> 今日待办</h2><span class="more" onclick="switchTab('todo')">全部 ›</span></div>
+      <div class="home-todo-list" id="homeTodoList"></div>
     </div>
 
-    <!-- 2. TRACKER -->
+    <!-- TRACKER -->
     <div class="page" id="trackerPage">
-      <div class="tracker-header">
-        <div class="tracker-date" id="trackerDate">——</div>
-        <div class="tracker-edd" id="trackerEdd">——</div>
-        <div class="tracker-progress-bar"><div class="tracker-progress-fill" id="trackerProgressFill" style="width:30%"></div></div>
-        <div class="tracker-progress-text" id="trackerProgressText">——</div>
-      </div>
+      <div class="tracker-header"><div class="tracker-date" id="trackerDate">——</div><div class="tracker-edd" id="trackerEdd">——</div><div class="tracker-bar"><div class="tracker-fill" id="trackerProgressFill" style="width:30%"></div></div><div class="tracker-pct" id="trackerProgressText">——</div></div>
       <div class="section-title"><h2><span>📅</span> 孕期日历</h2></div>
       <div class="week-selector" id="weekSelector"></div>
       <div id="weekDetail"></div>
     </div>
 
-    <!-- 3. TODO -->
+    <!-- TODO -->
     <div class="page" id="todoPage">
       <div class="section-title"><h2><span>✅</span> 孕期待办</h2></div>
-      <div class="todo-filters">
-        <button class="filter-btn active" data-filter="all">全部</button>
-        <button class="filter-btn" data-filter="early">孕早期</button>
-        <button class="filter-btn" data-filter="mid">孕中期</button>
-        <button class="filter-btn" data-filter="late">孕晚期</button>
+      <div class="todo-filters" style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto">
+        <button class="filter-btn" style="padding:8px 18px;background:#fff;border:1.5px solid #F0F0F0;border-radius:20px;font-size:13px;color:var(--text2);font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;flex-shrink:0" data-filter="all">全部</button>
+        <button class="filter-btn" style="padding:8px 18px;background:#fff;border:1.5px solid #F0F0F0;border-radius:20px;font-size:13px;color:var(--text2);font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;flex-shrink:0" data-filter="early">孕早期</button>
+        <button class="filter-btn" style="padding:8px 18px;background:#fff;border:1.5px solid #F0F0F0;border-radius:20px;font-size:13px;color:var(--text2);font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;flex-shrink:0" data-filter="mid">孕中期</button>
+        <button class="filter-btn" style="padding:8px 18px;background:#fff;border:1.5px solid #F0F0F0;border-radius:20px;font-size:13px;color:var(--text2);font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;flex-shrink:0" data-filter="late">孕晚期</button>
       </div>
       <div id="todoList"></div>
-      <button class="btn" style="margin-top:16px;" onclick="showAddTodoModal()">+ 添加待办事项</button>
+      <button class="btn" style="margin-top:16px" onclick="showAddTodoModal()">+ 添加待办</button>
     </div>
 
-    <!-- 4. HEALTH -->
+    <!-- DOCTOR -->
+    <div class="page" id="doctorPage">
+      <div class="section-title"><h2><span>👩‍⚕️</span> 在线问医</h2></div>
+      <div class="doctor-tabs" id="docCategoryTabs">
+        <button class="doc-tab active" data-cat="all">全部</button>
+        <button class="doc-tab" data-cat="high">主任医师</button>
+        <button class="doc-tab" data-cat="online">在线</button>
+        <button class="doc-tab" data-cat="video">视频问诊</button>
+      </div>
+      <div id="doctorListView">
+        <div id="doctorList"></div>
+      </div>
+      <div class="doc-detail" id="doctorDetailView">
+        <div class="doc-back" onclick="closeDoctorDetail()">‹ 返回医生列表</div>
+        <div id="doctorDetailContent"></div>
+      </div>
+    </div>
+
+    <!-- HEALTH -->
     <div class="page" id="healthPage">
       <div class="section-title"><h2><span>💪</span> 健康记录</h2></div>
-      <div class="health-card">
-        <div class="health-card-header">
-          <div class="health-card-title"><span>⚖️</span> 体重记录</div>
-          <button class="add-record-btn" onclick="showWeightModal()">+</button>
-        </div>
-        <div class="weight-chart" id="weightChart"></div>
-        <div class="chart-labels" id="weightChartLabels"></div>
-        <div class="health-records-list" id="weightRecords"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 添加第一条体重记录</div></div></div>
-      </div>
-      <div class="health-card">
-        <div class="health-card-header">
-          <div class="health-card-title"><span>❤️</span> 血压记录</div>
-          <button class="add-record-btn" onclick="showBpModal()">+</button>
-        </div>
-        <div class="health-records-list" id="bpRecords"><div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 添加第一条血压记录</div></div></div>
-      </div>
-      <div class="health-card">
-        <div class="health-card-header">
-          <div class="health-card-title"><span>🏥</span> 重要产检</div>
-        </div>
-        <div class="health-records-list" id="checkupList"></div>
-      </div>
+      <div class="health-card"><div class="health-card-hdr"><div class="health-card-title"><span>⚖️</span> 体重</div><button class="add-btn" onclick="showWeightModal()">+</button></div><div class="weight-chart" id="weightChart"></div><div class="chart-labels" id="weightChartLabels"></div><div class="health-records" id="weightRecords"><div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 记录</div></div></div></div>
+      <div class="health-card"><div class="health-card-hdr"><div class="health-card-title"><span>❤️</span> 血压</div><button class="add-btn" onclick="showBpModal()">+</button></div><div class="health-records" id="bpRecords"><div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 记录</div></div></div></div>
+      <div class="health-card"><div class="health-card-hdr"><div class="health-card-title"><span>🏥</span> 产检计划</div></div><div class="health-records" id="checkupList"></div></div>
     </div>
 
-    <!-- 5. TIPS -->
+    <!-- TIPS -->
     <div class="page" id="tipsPage">
       <div class="section-title"><h2><span>💡</span> 每日贴士</h2></div>
       <div id="tipsList"></div>
     </div>
   </div>
 
-  <!-- Tab Bar -->
+  <!-- TAB BAR -->
   <div class="tab-bar" id="tabBar" style="display:none">
     <div class="tab-item active" data-tab="home"><span class="tab-icon">🏠</span><span class="tab-label">首页</span></div>
     <div class="tab-item" data-tab="tracker"><span class="tab-icon">📅</span><span class="tab-label">孕期</span></div>
     <div class="tab-item" data-tab="todo"><span class="tab-icon">✅</span><span class="tab-label">待办</span></div>
+    <div class="tab-item" data-tab="doctor"><span class="tab-icon">👩‍⚕️</span><span class="tab-label">问医</span></div>
     <div class="tab-item" data-tab="health"><span class="tab-icon">💪</span><span class="tab-label">健康</span></div>
     <div class="tab-item" data-tab="tips"><span class="tab-icon">💡</span><span class="tab-label">贴士</span></div>
   </div>
 </div>
 
-<!-- Modals -->
-<div class="modal-overlay" id="weightModal"><div class="modal">
-  <div class="modal-handle"></div>
-  <div class="modal-header"><div class="modal-title">⚖️ 记录体重</div><button class="modal-close" onclick="closeModal('weightModal')">×</button></div>
-  <input type="number" class="modal-input" id="weightValue" placeholder="体重 (kg)" step="0.1" inputmode="decimal">
-  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('weightModal')">取消</button><button class="modal-btn confirm" onclick="addWeight()">保存</button></div>
-</div></div>
+<!-- MODALS -->
+<div class="modal-overlay" id="weightModal"><div class="modal"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title">⚖️ 记录体重</div><button class="modal-close" onclick="closeModal('weightModal')">×</button></div><input type="number" class="modal-input" id="weightValue" placeholder="体重 (kg)" step="0.1" inputmode="decimal"><div class="modal-btns"><button class="modal-btn cancel" onclick="closeModal('weightModal')">取消</button><button class="modal-btn confirm" onclick="addWeight()">保存</button></div></div></div>
+<div class="modal-overlay" id="bpModal"><div class="modal"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title">❤️ 记录血压</div><button class="modal-close" onclick="closeModal('bpModal')">×</button></div><input type="number" class="modal-input" id="bpHigh" placeholder="收缩压 (mmHg)" style="margin-bottom:12px" inputmode="numeric"><input type="number" class="modal-input" id="bpLow" placeholder="舒张压 (mmHg)" inputmode="numeric"><div class="modal-btns"><button class="modal-btn cancel" onclick="closeModal('bpModal')">取消</button><button class="modal-btn confirm" onclick="addBp()">保存</button></div></div></div>
+<div class="modal-overlay" id="todoModal"><div class="modal"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title">📝 添加待办</div><button class="modal-close" onclick="closeModal('todoModal')">×</button></div><input type="text" class="modal-input" id="todoText" placeholder="待办事项"><select class="modal-input" id="todoStage"><option value="early">孕早期</option><option value="mid">孕中期</option><option value="late">孕晚期</option></select><div class="modal-btns"><button class="modal-btn cancel" onclick="closeModal('todoModal')">取消</button><button class="modal-btn confirm" onclick="addTodo()">添加</button></div></div></div>
+<div class="modal-overlay" id="weekDetailModal"><div class="modal" style="max-height:92vh;overflow-y:auto"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title" id="weekDetailTitle">详情</div><button class="modal-close" onclick="closeModal('weekDetailModal')">×</button></div><div class="week-detail-content" id="weekDetailContent"></div></div></div>
+<!-- Booking Confirm Modal -->
+<div class="modal-overlay" id="bookingModal"><div class="modal"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title" id="bookingTitle">确认预约</div><button class="modal-close" onclick="closeModal('bookingModal')">×</button></div><div id="bookingContent"></div></div></div>
+<!-- Video Consultation Modal -->
+<div class="modal-overlay" id="videoModal"><div class="modal" style="max-height:92vh;overflow-y:auto"><div class="modal-handle"></div><div class="modal-hdr"><div class="modal-title">📹 视频问诊</div><button class="modal-close" onclick="closeModal('videoModal')">×</button></div><div id="videoContent"></div></div></div>
 
-<div class="modal-overlay" id="bpModal"><div class="modal">
-  <div class="modal-handle"></div>
-  <div class="modal-header"><div class="modal-title">❤️ 记录血压</div><button class="modal-close" onclick="closeModal('bpModal')">×</button></div>
-  <input type="number" class="modal-input" id="bpHigh" placeholder="收缩压 (mmHg)" style="margin-bottom:12px" inputmode="numeric">
-  <input type="number" class="modal-input" id="bpLow" placeholder="舒张压 (mmHg)" inputmode="numeric">
-  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('bpModal')">取消</button><button class="modal-btn confirm" onclick="addBp()">保存</button></div>
-</div></div>
-
-<div class="modal-overlay" id="todoModal"><div class="modal">
-  <div class="modal-handle"></div>
-  <div class="modal-header"><div class="modal-title">📝 添加待办</div><button class="modal-close" onclick="closeModal('todoModal')">×</button></div>
-  <input type="text" class="modal-input" id="todoText" placeholder="待办事项内容" enterkeyhint="done">
-  <select class="modal-input" id="todoStage"><option value="early">孕早期</option><option value="mid">孕中期</option><option value="late">孕晚期</option></select>
-  <div class="modal-buttons"><button class="modal-btn cancel" onclick="closeModal('todoModal')">取消</button><button class="modal-btn confirm" onclick="addTodo()">添加</button></div>
-</div></div>
-
-<div class="modal-overlay" id="weekDetailModal"><div class="modal week-detail-modal">
-  <div class="modal-handle"></div>
-  <div class="modal-header"><div class="modal-title" id="weekDetailTitle">第12周详情</div><button class="modal-close" onclick="closeModal('weekDetailModal')">×</button></div>
-  <div class="week-detail-content" id="weekDetailContent"></div>
-</div></div>
-
-<!-- Toast -->
 <div id="toast" class="toast"></div>
 
 <script>
-// ======================== DATA ========================
-
+// ========== DATA ==========
 const babyData = {
-  1:{emoji:'🔴',size:'一颗罂粟籽',desc:'受精卵正在着床，生命的旅程开始啦'},
-  2:{emoji:'🔴',size:'一颗芝麻',desc:'胚胎开始形成，宝宝开始生长'},
-  3:{emoji:'🔴',size:'一颗芝麻',desc:'心脏开始跳动，每分钟约150次'},
-  4:{emoji:'🫐',size:'一颗蓝莓',desc:'胳膊和腿的小芽开始出现'},
-  5:{emoji:'🫐',size:'一颗蓝莓',desc:'面部特征开始发育，可以看到眼睛的轮廓'},
-  6:{emoji:'🍇',size:'一颗葡萄',desc:'手指和脚趾开始形成，心脏分为四个腔室'},
-  7:{emoji:'🍇',size:'一颗葡萄',desc:'大脑快速发育，身体开始伸展'},
-  8:{emoji:'🍒',size:'一颗樱桃',desc:'所有主要器官已形成，开始像个小人了'},
-  9:{emoji:'🍒',size:'一颗樱桃',desc:'肌肉开始工作，开始做出微小动作'},
-  10:{emoji:'🍓',size:'一颗草莓',desc:'指甲开始生长，肾脏开始产生尿液'},
-  11:{emoji:'🍓',size:'一颗草莓',desc:'头发开始生长，手指脚趾完全分开'},
-  12:{emoji:'🍋',size:'一颗柠檬',desc:'手指可以张开合拢，开始有反射动作'},
-  13:{emoji:'🍋',size:'一颗柠檬',desc:'指纹形成，声带开始发育'},
-  14:{emoji:'🍑',size:'一颗桃子',desc:'开始有表情，可以皱眉头、做鬼脸'},
-  15:{emoji:'🍑',size:'一颗桃子',desc:'可以感知光线，头部开始长头发'},
-  16:{emoji:'🥑',size:'一颗牛油果',desc:'指甲完全形成，头部开始直立'},
-  17:{emoji:'🥑',size:'一颗牛油果',desc:'骨骼从软骨变硬，开始储存脂肪'},
-  18:{emoji:'🍏',size:'一个苹果',desc:'可以听到外界声音，对声音有反应'},
-  19:{emoji:'🍏',size:'一个苹果',desc:'开始长脂肪，皮肤不再透明'},
-  20:{emoji:'🥕',size:'一根胡萝卜',desc:'开始吞咽羊水，胎毛覆盖全身'},
-  21:{emoji:'🥕',size:'一根胡萝卜',desc:'眉毛和眼睑完全形成，开始有睡眠周期'},
-  22:{emoji:'🥕',size:'一根胡萝卜',desc:'看起来像小宝宝，嘴唇越来越分明'},
-  23:{emoji:'🥕',size:'一根胡萝卜',desc:'听力敏锐，能识别妈妈的声音'},
-  24:{emoji:'🌽',size:'一根玉米',desc:'肺部开始产生表面活性物质，准备呼吸'},
-  25:{emoji:'🌽',size:'一根玉米',desc:'头发越来越浓密，睁眼闭眼自如'},
-  26:{emoji:'🌽',size:'一根玉米',desc:'眼睛可以睁开，对光线有反应'},
-  27:{emoji:'🥦',size:'一朵西兰花',desc:'大脑快速发育，开始做梦'},
-  28:{emoji:'🥦',size:'一朵西兰花',desc:'睫毛生成，头发继续生长'},
-  29:{emoji:'🥦',size:'一朵西兰花',desc:'肌肉和肺部继续成熟，胎动更明显'},
-  30:{emoji:'🥦',size:'一朵西兰花',desc:'头部在长大，大脑沟回增多'},
-  31:{emoji:'🥦',size:'一朵西兰花',desc:'五感完全发育，能分辨甜味和苦味'},
-  32:{emoji:'🥬',size:'一棵生菜',desc:'指甲长到指尖，骨骼基本硬化'},
-  33:{emoji:'🥬',size:'一棵生菜',desc:'能分辨白天黑夜，睡眠更规律'},
-  34:{emoji:'🥬',size:'一棵生菜',desc:'中枢神经基本成熟，头围接近出生大小'},
-  35:{emoji:'🍈',size:'一个哈密瓜',desc:'肾脏发育完全，胎位逐渐固定'},
-  36:{emoji:'🍈',size:'一个哈密瓜',desc:'肺部基本成熟，随时可能发动'},
-  37:{emoji:'🍈',size:'一个哈密瓜',desc:'足月宝宝，各个器官已准备好出生'},
-  38:{emoji:'🍈',size:'一个哈密瓜',desc:'继续积累脂肪，保持体温能力增强'},
-  39:{emoji:'🍈',size:'一个哈密瓜',desc:'大脑继续发育，随时等待见面'},
-  40:{emoji:'🍉',size:'一个西瓜',desc:'准备好见面啦！期待与宝宝的第一次拥抱'}
+  1:{emoji:'🔴',size:'罂粟籽',desc:'受精卵着床，生命旅程开始'},
+  2:{emoji:'🔴',size:'芝麻',desc:'胚胎快速生长'},
+  3:{emoji:'🔴',size:'芝麻',desc:'心脏开始跳动'},
+  4:{emoji:'🫐',size:'蓝莓',desc:'胳膊腿小芽出现'},
+  5:{emoji:'🫐',size:'蓝莓',desc:'面部特征发育'},
+  6:{emoji:'🍇',size:'葡萄',desc:'手指脚趾形成'},
+  7:{emoji:'🍇',size:'葡萄',desc:'大脑快速发育'},
+  8:{emoji:'🍒',size:'樱桃',desc:'主要器官已形成'},
+  9:{emoji:'🍒',size:'樱桃',desc:'肌肉开始工作'},
+  10:{emoji:'🍓',size:'草莓',desc:'指甲开始生长'},
+  11:{emoji:'🍓',size:'草莓',desc:'头发开始生长'},
+  12:{emoji:'🍋',size:'柠檬',desc:'手指可张开合拢'},
+  13:{emoji:'🍋',size:'柠檬',desc:'指纹形成'},
+  14:{emoji:'🍑',size:'桃子',desc:'开始有表情'},
+  15:{emoji:'🍑',size:'桃子',desc:'可以感知光线'},
+  16:{emoji:'🥑',size:'牛油果',desc:'指甲完全形成'},
+  17:{emoji:'🥑',size:'牛油果',desc:'骨骼变硬'},
+  18:{emoji:'🍏',size:'苹果',desc:'可以听到声音'},
+  19:{emoji:'🍏',size:'苹果',desc:'开始长脂肪'},
+  20:{emoji:'🥕',size:'胡萝卜',desc:'吞咽羊水'},
+  21:{emoji:'🥕',size:'胡萝卜',desc:'眉毛眼睑形成'},
+  22:{emoji:'🥕',size:'胡萝卜',desc:'像小宝宝了'},
+  23:{emoji:'🥕',size:'胡萝卜',desc:'听力敏锐'},
+  24:{emoji:'🌽',size:'玉米',desc:'肺部发育中'},
+  25:{emoji:'🌽',size:'玉米',desc:'头发浓密'},
+  26:{emoji:'🌽',size:'玉米',desc:'眼睛睁开'},
+  27:{emoji:'🥦',size:'西兰花',desc:'大脑快速发育'},
+  28:{emoji:'🥦',size:'西兰花',desc:'睫毛生成'},
+  29:{emoji:'🥦',size:'西兰花',desc:'肌肉肺部成熟'},
+  30:{emoji:'🥦',size:'西兰花',desc:'大脑沟回增多'},
+  31:{emoji:'🥦',size:'西兰花',desc:'五感完全发育'},
+  32:{emoji:'🥬',size:'生菜',desc:'指甲长到指尖'},
+  33:{emoji:'🥬',size:'生菜',desc:'骨骼基本硬化'},
+  34:{emoji:'🥬',size:'生菜',desc:'中枢神经成熟'},
+  35:{emoji:'🍈',size:'哈密瓜',desc:'肾脏发育完全'},
+  36:{emoji:'🍈',size:'哈密瓜',desc:'肺部基本成熟'},
+  37:{emoji:'🍈',size:'哈密瓜',desc:'足月，随时出生'},
+  38:{emoji:'🍈',size:'哈密瓜',desc:'积累脂肪'},
+  39:{emoji:'🍈',size:'哈密瓜',desc:'大脑继续发育'},
+  40:{emoji:'🍉',size:'西瓜',desc:'准备见面啦!'}
 };
-
-const pregnancyInfo = {
-  early:{
-    title:'孕早期',babyChanges:['胎儿器官快速发育，心脏开始跳动','四肢和面部特征开始形成','神经系统和大脑快速发育','开始有反射动作'],
-    momChanges:['可能出现孕吐反应，一般12周后缓解','乳房胀痛、敏感','容易疲劳、嗜睡','情绪波动较大，需要家人理解'],tips:['继续补充叶酸，每天400微克','避免接触有害物质和二手烟','保持充足睡眠，每天8小时','少吃多餐，缓解孕吐反应']
-  },
-  mid:{
-    title:'孕中期',babyChanges:['开始出现明显的胎动','性别可以通过B超辨别','可以听到外界声音，开始胎教','毛发和指甲生长完全'],momChanges:['孕吐逐渐消失','食欲增加，腹部明显隆起','可能会出现妊娠纹','情绪趋于稳定'],tips:['注意补充钙和铁','适度运动，孕期瑜伽是不错的选择','穿着宽松舒适的孕妇装','开始准备婴儿用品']
-  },
-  late:{
-    title:'孕晚期',babyChanges:['胎位逐渐固定为头位','肺部发育成熟','皮下脂肪积累，越来越圆润','随时准备出生'],momChanges:['尿频加重，夜间需要频繁起夜','可能出现手脚水肿','睡眠困难，建议左侧卧','假性宫缩开始出现'],tips:['准备好待产包，提前一个月准备','每天坚持数胎动','避免长途旅行','学习拉玛泽呼吸法，为分娩做准备']
-  }
+const pregInfo = {
+  early:{t:'孕早期',b:['器官快速发育，心脏跳动','四肢面部特征形成','神经大脑快速发育','开始有反射动作'],m:['可能出现孕吐','乳房胀痛敏感','容易疲劳嗜睡','情绪波动较大'],p:['补充叶酸400μg/天','避免有害物质','每天睡足8小时','少吃多餐']},
+  mid:{t:'孕中期',b:['明显胎动','性别可辩别','能听到外界声音','毛发指甲长全'],m:['孕吐消失','食欲增加腹部隆起','可能出现妊娠纹','情绪趋于稳定'],p:['补钙补铁','做孕期瑜伽','穿宽松舒适孕妇装','开始准备婴儿用品']},
+  late:{t:'孕晚期',b:['胎位固定为头位','肺部发育成熟','皮下脂肪积累','随时准备出生'],m:['尿频加重','手脚可能水肿','左侧卧改善睡眠','假性宫缩'],p:['提前准备待产包','每天数胎动','避免长途旅行','学习拉玛泽呼吸法']}
 };
-
 const defaultTodos = [
-  {id:1,title:'预约第一次产检（确认怀孕）',stage:'early',done:false},
-  {id:2,title:'开始补充叶酸',stage:'early',done:false},
-  {id:3,title:'办理生育登记',stage:'early',done:false},
-  {id:4,title:'做NT检查（11-13周）',stage:'early',done:false},
-  {id:5,title:'预约大排畸检查（20-24周）',stage:'mid',done:false},
-  {id:6,title:'开始涂抹妊娠纹霜',stage:'mid',done:false},
-  {id:7,title:'预约糖耐量测试（24-28周）',stage:'mid',done:false},
-  {id:8,title:'准备待产包',stage:'late',done:false},
-  {id:9,title:'学习拉玛泽呼吸法',stage:'late',done:false},
-  {id:10,title:'确定生产医院和分娩方式',stage:'early',done:false},
-  {id:11,title:'预订月嫂或月子中心',stage:'mid',done:false},
-  {id:12,title:'了解新生儿疫苗接种',stage:'late',done:false}
+  {id:1,title:'预约第一次产检',stage:'early',done:false},{id:2,title:'开始补充叶酸',stage:'early',done:false},{id:3,title:'办理生育登记',stage:'early',done:false},{id:4,title:'做NT检查（11-13周）',stage:'early',done:false},{id:5,title:'预约大排畸（20-24周）',stage:'mid',done:false},{id:6,title:'涂抹妊娠纹霜',stage:'mid',done:false},{id:7,title:'糖耐量测试（24-28周）',stage:'mid',done:false},{id:8,title:'准备待产包',stage:'late',done:false},{id:9,title:'学习拉玛泽呼吸法',stage:'late',done:false},{id:10,title:'确定生产医院',stage:'early',done:false},{id:11,title:'预订月嫂/月子中心',stage:'mid',done:false},{id:12,title:'了解新生儿疫苗接种',stage:'late',done:false}
 ];
-
 const tipsData = [
-  {id:1,category:'饮食',title:'孕期这样吃，长胎不长肉',content:'多吃优质蛋白（鱼、肉、蛋、豆制品），每天一杯牛奶补钙，适量水果补充维生素。少吃高糖、高油、高盐食物，避免体重增长过快。',liked:false},
-  {id:2,category:'运动',title:'适合孕期的温和运动',content:'散步是最安全的选择，每天30分钟；孕妇瑜伽有助于增强柔韧性和体力，缓解腰背酸痛；游泳可减轻身体负重感。运动前请咨询医生。',liked:false},
-  {id:3,category:'睡眠',title:'孕期睡姿有讲究',content:'孕中晚期建议姿势为左侧卧，可改善子宫右旋，增加胎盘血流量。可在肚子下、双腿间垫枕头，减轻压力。避免仰卧，防止压迫静脉。',liked:false},
-  {id:4,category:'护肤',title:'孕期护肤品安全指南',content:'选择无香料、无酒精、无刺激的孕妇专用护肤品。避免含维A酸、水杨酸、氢醌等成分的产品。防晒建议选择物理防晒（二氧化钛、氧化锌）。',liked:false},
-  {id:5,category:'情绪',title:'孕期情绪管理很重要',content:'孕期激素波动导致情绪变化是正常的。多与家人沟通分享感受，保持轻度运动，练习深呼吸和冥想。如果持续情绪低落，请及时寻求心理支持。',liked:false},
-  {id:6,category:'营养',title:'孕期补铁防贫血',content:'孕期对铁的需求量增加，缺铁可能导致贫血，影响胎儿发育。富含铁的食物：红肉、动物肝脏（适量）、菠菜、豆类。搭配维生素C（如橙子）可促进铁吸收。',liked:false},
-  {id:7,category:'产检',title:'孕期重要产检时间表',content:'孕6-8周：确认怀孕；11-13周：NT检查；16-20周：唐氏筛查；20-24周：大排畸；24-28周：糖耐量；28周后：每2周产检；36周后：每周产检。',liked:false},
-  {id:8,category:'生活',title:'孕期安全出行指南',content:'孕早期和孕晚期尽量避免长途旅行。出行选择宽松衣物和平底鞋，随身携带饮用水和零食。避免颠簸路段，系好安全带（腰带在腹部下方）。',liked:false}
+  {id:1,c:'饮食',t:'孕期这样吃，长胎不长肉',c:'多吃优质蛋白（鱼、肉、蛋、豆制品），每天一杯牛奶补钙。少吃高糖高油高盐，控制体重增长。',l:false},
+  {id:2,c:'运动',t:'适合孕期的温和运动',c:'散步每天30分钟最安全；孕妇瑜伽增强柔韧性；游泳减轻身体负重。运动前请咨询医生。',l:false},
+  {id:3,c:'睡眠',t:'孕期睡姿有讲究',c:'孕中晚期建议左侧卧，可改善子宫右旋。可在腹部、双腿间垫枕头。避免仰卧。',l:false},
+  {id:4,c:'护肤',t:'孕期护肤品安全指南',c:'选择无香精、无酒精、无刺激产品。避免维A酸、水杨酸、氢醌。防晒选中物理防晒。',l:false},
+  {id:5,c:'情绪',t:'孕期情绪管理',c:'激素波动导致情绪变化是正常的。多沟通，轻运动，深呼吸。持续低落请寻求心理支持。',l:false},
+  {id:6,c:'营养',t:'孕期补铁防贫血',c:'富含铁：红肉、动物肝脏、菠菜、豆类。搭配维C（橙子）促吸收。必要时遵医嘱补铁剂。',l:false},
+  {id:7,c:'产检',t:'重要产检时间表',c:'6-8周确认；11-13周NT；16-20周唐筛；20-24周大排畸；24-28周糖耐；36周后每周产检。',l:false},
+  {id:8,c:'生活',t:'孕期安全出行',c:'早期晚期避免长途。穿宽松衣和平底鞋，随身带水。系好安全带（腰带在腹部下方）。',l:false}
 ];
-
-// ✅ 修复 Bug：使用字符串而非算术表达式
 const checkupSchedule = [
-  {week:'6-8',name:'第一次产检',desc:'确认怀孕，建立档案'},
-  {week:'12',name:'NT检查',desc:'胎儿颈部透明带扫描'},
-  {week:'16',name:'唐氏筛查',desc:'评估唐氏综合症风险'},
-  {week:'20',name:'大排畸',desc:'系统性超声检查'},
-  {week:'24',name:'糖耐量测试',desc:'妊娠糖尿病筛查'},
-  {week:'28',name:'乙肝复查',desc:'复查乙肝表面抗原'},
-  {week:'32',name:'B超检查',desc:'评估胎儿发育情况'},
-  {week:'36',name:'B族链球菌',desc:'分娩前检查'},
-  {week:'37-40',name:'产前检查',desc:'每周一次，监测胎位和宫颈'}
+  {w:'6-8',n:'第一次产检',d:'确认怀孕，建立档案'},{w:'12',n:'NT检查',d:'胎儿颈后透明带扫描'},{w:'16',n:'唐氏筛查',d:'评估唐氏综合症风险'},{w:'20',n:'大排畸',d:'系统性超声检查'},{w:'24',n:'糖耐量测试',d:'妊娠糖尿病筛查'},{w:'28',n:'乙肝复查',d:'复查乙肝表面抗原'},{w:'32',n:'B超检查',d:'评估胎儿发育'},{w:'36',n:'B族链球菌',d:'分娩前检查'},{w:'37-40',n:'产前检查',d:'每周一次，监测胎位'}
 ];
 
-// ======================== STATE ========================
+// ========== DOCTOR DATA ==========
+const doctors = [
+  {id:1,name:'张美华',title:'主任医师',hospital:'北京协和医院',dept:'妇产科',exp:30,desc:'中华医学会妇产科学分会委员，北京市产科质量控制专家组成员。擅长高危妊娠管理、妊娠期糖尿病、妊娠期高血压疾病、胎儿医学。主持国家级课题3项，发表SCI论文40余篇。',cert:'执业证书编号：11010100123456',fee:200,rating:4.9,reviews:1268,online:true,cat:'high',tags:['高危妊娠','妊娠糖尿病','妊娠高血压'],schedule:{mon:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:true}],tue:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}],wed:[{t:'09:00-10:00',f:false},{t:'10:00-11:00',f:true},{t:'14:00-15:00',f:true}],thu:[{t:'08:00-09:00',f:true},{t:'14:00-15:00',f:true}],fri:[{t:'09:00-10:00',f:false},{t:'10:00-11:00',f:false}]}},
+  {id:2,name:'李慧敏',title:'副主任医师',hospital:'北京大学第三医院',dept:'妇产科',exp:18,desc:'北京大学医学部博士，美国约翰霍普金斯医院访问学者。擅长产前咨询、优生优育、胎儿超声异常诊断、遗传咨询。对复发性流产有深入研究。',cert:'执业证书编号：11010500234567',fee:120,rating:4.8,reviews:893,online:true,cat:'high',tags:['产前诊断','优生优育','复发性流产'],schedule:{mon:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true}],wed:[{t:'08:00-09:00',f:true},{t:'10:00-11:00',f:true},{t:'14:00-15:00',f:true}],fri:[{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}]}},
+  {id:3,name:'王丽萍',title:'主任医师',hospital:'上海第一妇婴保健院',dept:'产科',exp:25,desc:'上海市产前诊断中心专家，上海市医学会围产医学分会委员。深耕产科临床25年，在妊娠合并症及并发症诊治、早产防治方面经验丰富。',cert:'执业证书编号：31010100345678',fee:180,rating:4.9,reviews:1562,online:false,cat:'high',tags:['早产防治','妊娠合并症','产前诊断'],schedule:{tue:[{t:'08:00-09:00',f:false},{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:true}],thu:[{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}],sat:[{t:'09:00-10:00',f:true}]}},
+  {id:4,name:'陈秀英',title:'副主任医师',hospital:'四川大学华西第二医院',dept:'妇产科',exp:20,desc:'四川省医学会妇产科专委会委员。擅长围产期保健、产后康复指导、妊娠期甲状腺疾病诊治。多次获评"患者最满意医生"。',cert:'执业证书编号：51010100456789',fee:100,rating:4.7,reviews:742,online:true,cat:'high',tags:['围产期保健','产后康复','妊娠甲状腺'],schedule:{mon:[{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}],wed:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true}],fri:[{t:'08:00-09:00',f:true},{t:'10:00-11:00',f:true}]}},
+  {id:5,name:'刘芳',title:'主治医师',hospital:'广东省妇幼保健院',dept:'产科',exp:12,desc:'南方医科大学硕士。专注于孕期营养管理、体重控制、分娩准备教育。熟悉无痛分娩及导乐陪伴技术，致力于提升孕产妇分娩体验。',cert:'执业证书编号：44010100567890',fee:60,rating:4.6,reviews:518,online:true,cat:'',tags:['孕期营养','体重管理','分娩教育'],schedule:{tue:[{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:true}],thu:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}],sat:[{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:true}]}},
+  {id:6,name:'赵雪梅',title:'主任医师',hospital:'浙大医学院附属妇产科医院',dept:'妇产科',exp:28,desc:'中华医学会围产医学分会常委，浙江省孕产妇死亡评审专家。在妊娠期急危重症抢救、胎儿宫内治疗领域享有盛誉。享受国务院特殊津贴。',cert:'执业证书编号：33010100678901',fee:250,rating:5.0,reviews:2034,online:false,cat:'high',tags:['急危重症','胎儿治疗','高龄妊娠'],schedule:{mon:[{t:'08:00-09:00',f:false}],wed:[{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:false}],fri:[{t:'08:00-09:00',f:true}]}},
+  {id:7,name:'孙小曼',title:'副主任医师',hospital:'南京鼓楼医院',dept:'妇产科',exp:16,desc:'江苏省围产医学青年委员。擅长孕前咨询、早孕诊断与管理、孕期超声解读。对孕产妇心理健康管理有独到见解。',cert:'执业证书编号：32010100789012',fee:80,rating:4.5,reviews:386,online:true,cat:'',tags:['孕前咨询','早孕管理','心理辅导'],schedule:{tue:[{t:'09:00-10:00',f:true}],thu:[{t:'08:00-09:00',f:true},{t:'14:00-15:00',f:true}],sun:[{t:'09:00-10:00',f:true},{t:'10:00-11:00',f:true}]}},
+  {id:8,name:'周晓琳',title:'副主任医师',hospital:'武汉同济医院',dept:'妇产科',exp:22,desc:'湖北省医学会妇产科分会委员。在妊娠合并心血管疾病、双胎妊娠管理方面经验丰富。承担多项省级科研项目。',cert:'执业证书编号：42010100890123',fee:150,rating:4.8,reviews:967,online:true,cat:'high',tags:['双胎妊娠','妊娠心脏病','高危妊娠'],schedule:{mon:[{t:'08:00-09:00',f:true},{t:'09:00-10:00',f:true}],wed:[{t:'08:00-09:00',f:true}],fri:[{t:'09:00-10:00',f:true},{t:'14:00-15:00',f:true}]}}
+];
+const dayNames = ['周日','周一','周二','周三','周四','周五','周六'];
 
-let appData = {
-  lastPeriodDate: null, createdAt: null,
-  todos: [], weightRecords: [], bpRecords: [], tips: []
-};
-let currentTab = 'home';
-let selectedWeek = 1;
+// ========== STATE ==========
+let appData = {lastPeriodDate:null,createdAt:null,todos:[],weightRecords:[],bpRecords:[],tips:[]};
+let currentTab='home',selectedWeek=1,selectedDoctor=null,selectedDate=null,selectedTime=null;
 
-// ======================== INIT ========================
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded',()=>{loadData();initGreeting();initTabBar();initFilters();initDocTabs();const t=new Date().toISOString().split('T')[0];document.getElementById('lastPeriodDate').value=t;if(!appData.lastPeriodDate){appData.todos=JSON.parse(JSON.stringify(defaultTodos));appData.tips=JSON.parse(JSON.stringify(tipsData))}if(appData.lastPeriodDate)showMainContent()});
 
-document.addEventListener('DOMContentLoaded',()=>{
-  loadData();
-  initGreeting();
-  initTabBar();
-  initFilterBtns();
+function loadData(){try{const s=localStorage.getItem('pregData3');if(s)appData=JSON.parse(s);else{const o=localStorage.getItem('pregData2');if(o){const od=JSON.parse(o);appData={...appData,...od, todos:od.todos&&od.todos.length?od.todos:JSON.parse(JSON.stringify(defaultTodos)),tips:od.tips&&od.tips.length>0?od.tips:JSON.parse(JSON.stringify(tipsData))}}}}catch(e){}if(!appData.todos||!appData.todos.length)appData.todos=JSON.parse(JSON.stringify(defaultTodos));if(!appData.tips||!appData.tips.length)appData.tips=JSON.parse(JSON.stringify(tipsData))}
+function saveData(){try{localStorage.setItem('pregData3',JSON.stringify(appData))}catch(e){}}
 
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('lastPeriodDate').value = today;
+function initGreeting(){const h=new Date().getHours(),el=document.getElementById('greeting');if(h<6)el.textContent='🌙 夜深了，早点休息';else if(h<9)el.textContent='🌅 早安，美好的一天';else if(h<12)el.textContent='☀️ 上午好，记得吃早餐';else if(h<14)el.textContent='🌤️ 中午好，记得午休';else if(h<18)el.textContent='🌤️ 下午好';else if(h<21)el.textContent='🌇 傍晚好';else el.textContent='🌙 晚安'}
 
-  if (appData.lastPeriodDate && appData.todos.length === 0) {
-    // first-time user with data but no todos
-  }
-  if (!appData.lastPeriodDate) {
-    appData.todos = JSON.parse(JSON.stringify(defaultTodos));
-    appData.tips = JSON.parse(JSON.stringify(tipsData));
-  }
-  if (appData.lastPeriodDate) {
-    showMainContent();
-  }
-});
+document.getElementById('startBtn').addEventListener('click',()=>{const v=document.getElementById('lastPeriodDate').value;if(!v){showToast('请选择日期');return}appData.lastPeriodDate=v;appData.createdAt=new Date().toISOString();if(!appData.todos||!appData.todos.length)appData.todos=JSON.parse(JSON.stringify(defaultTodos));if(!appData.tips||!appData.tips.length)appData.tips=JSON.parse(JSON.stringify(tipsData));saveData();showMainContent()});
+function showMainContent(){document.getElementById('setupContainer').classList.add('hidden');document.getElementById('mainContent').classList.add('active');document.getElementById('tabBar').style.display='flex';updateAll();showToast('🌸 欢迎使用怀孕助手')}
+function updateAll(){updateHomePage();updateTrackerPage();updateTodoList();updateDoctorList();updateHealthPage();updateTipsPage()}
 
-// ======================== PERSISTENCE ========================
+// ========== TAB ==========
+function initTabBar(){document.querySelectorAll('.tab-item').forEach(t=>t.addEventListener('click',()=>switchTab(t.dataset.tab)))}
+function switchTab(t){currentTab=t;document.querySelectorAll('.tab-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const p=document.getElementById(t+'Page');if(p){p.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}}
 
-function loadData() {
-  try {
-    const saved = localStorage.getItem('pregnancyAppData2');
-    if (saved) {
-      appData = JSON.parse(saved);
-      // migrate old data
-      if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
-    } else {
-      // try old key
-      const old = localStorage.getItem('pregnancyAppData');
-      if (old) {
-        const oldData = JSON.parse(old);
-        appData = { ...appData, ...oldData };
-        appData.tips = oldData.tips && oldData.tips.length > 0 ? oldData.tips : JSON.parse(JSON.stringify(tipsData));
-        appData.todos = oldData.todos && oldData.todos.length > 0 ? oldData.todos : JSON.parse(JSON.stringify(defaultTodos));
-      }
-    }
-  } catch(e){ console.warn('Load data error', e); }
-  // ensure defaults
-  if (!appData.todos || appData.todos.length === 0) appData.todos = JSON.parse(JSON.stringify(defaultTodos));
-  if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
-}
-function saveData() {
-  try { localStorage.setItem('pregnancyAppData2', JSON.stringify(appData)); } catch(e){}
-}
+// ========== WEEK ==========
+function calcWeek(){const l=new Date(appData.lastPeriodDate),t=new Date(),d=Math.max(0,Math.floor((t-l)/(864e5))),w=Math.min(Math.max(Math.floor(d/7)+1,1),40),e=new Date(l);e.setDate(e.getDate()+280);return{week:w,edd:e.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'}),left:Math.max(0,280-d)}}
+function triLabel(w){return w<=13?'孕早期':w<=28?'孕中期':'孕晚期'}
+function getTri(w){return w<=13?'early':w<=28?'mid':'late'}
 
-// ======================== GREETING ========================
+// ========== HOME ==========
+function updateHomePage(){if(!appData.lastPeriodDate)return;const w=calcWeek(),wk=w.week;selectedWeek=wk;const d=babyData[wk]||babyData[40];document.getElementById('babyEmoji').textContent=d.emoji;document.getElementById('babySizeText').textContent='本周像'+d.size;document.getElementById('babySizeDesc').textContent=d.desc;const p=Math.min(wk/40*100,100),c=2*Math.PI*50;document.getElementById('progressRing').style.strokeDashoffset=c-p/100*c;document.getElementById('currentWeek').textContent='第'+wk+'周';document.querySelector('.progress-week-label').textContent=triLabel(wk);document.getElementById('eddDate').textContent=w.edd;document.getElementById('daysLeft').textContent=w.left+'天';const info=wk<=13?pregInfo.early:wk<=28?pregInfo.mid:pregInfo.late;document.getElementById('babyDevList').innerHTML=info.b.map(i=>'<li>'+i+'</li>').join('');document.getElementById('momChangesList').innerHTML=info.m.map(i=>'<li>'+i+'</li>').join('');updateHomeTodos()}
+function updateHomeTodos(){const el=document.getElementById('homeTodoList');const todos=appData.todos.filter(t=>!t.done).slice(0,4);if(todos.length===0){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">✅ 所有待办已完成！</div>';return}const done=appData.todos.filter(t=>t.done).length,total=appData.todos.length;el.innerHTML='<div class="home-todo-header"><span>今日待办</span><span class="todo-progress">'+done+'/'+total+' 已完成</span></div>'+todos.map(t=>'<div class="todo-mini-item" onclick="toggleTodo('+t.id+')">'+(t.done?'<div class="cb" style="background:var(--success);border-color:var(--success);color:#fff">✓</div>':'<div class="cb"></div>')+'<span class="cb-text">'+t.title+'</span></div>').join('')}
 
-function initGreeting() {
-  const h = new Date().getHours();
-  const el = document.getElementById('greeting');
-  if (h<6) el.textContent='🌙 夜深了，早点休息';
-  else if (h<9) el.textContent='🌅 早安，美好的一天开始啦';
-  else if (h<12) el.textContent='☀️ 上午好，记得吃早餐';
-  else if (h<14) el.textContent='🌤️ 中午好，记得午休';
-  else if (h<18) el.textContent='🌤️ 下午好，喝杯水活动一下';
-  else if (h<21) el.textContent='🌇 傍晚好，慢慢放松下来';
-  else el.textContent='🌙 晚安，做个好梦';
-}
+// ========== TRACKER ==========
+function updateTrackerPage(){const w=calcWeek();document.getElementById('trackerDate').textContent='今天是'+new Date().toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});document.getElementById('trackerEdd').textContent='预产期：'+w.edd;const p=Math.min(w.week/40*100,100);document.getElementById('trackerProgressFill').style.width=p+'%';document.getElementById('trackerProgressText').textContent='已完成 '+Math.round(p)+'%';const sel=document.getElementById('weekSelector');sel.innerHTML='';for(let i=1;i<=40;i++){const b=document.createElement('button');b.className='week-btn'+(i===w.week?' active':'');b.textContent='第'+i+'周';b.addEventListener('click',()=>showWeekDetail(i));sel.appendChild(b)}showWeekDetail(w.week)}
+function showWeekDetail(week){selectedWeek=week;document.querySelectorAll('.week-btn').forEach((b,i)=>b.classList.toggle('active',i+1===week));const d=babyData[week]||babyData[40],info=week<=13?pregInfo.early:week<=28?pregInfo.mid:pregInfo.late;document.getElementById('weekDetail').innerHTML='<div class="baby-card" style="cursor:pointer" onclick="openWeekDetail('+week+')"><span class="baby-emoji">'+d.emoji+'</span><div class="baby-size-text">本周像'+d.size+'</div><div class="baby-size-desc">'+d.desc+'</div></div><div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">'+info.b.map(i=>'<li>'+i+'</li>').join('')+'</ul></div><div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">'+info.m.map(i=>'<li>'+i+'</li>').join('')+'</ul></div><div class="info-card"><h3><span>💡</span> 建议</h3><ul class="info-list">'+info.p.map(i=>'<li>'+i+'</li>').join('')+'</ul></div>'}
+function openWeekDetail(week){const d=babyData[week]||babyData[40],info=week<=13?pregInfo.early:week<=28?pregInfo.mid:pregInfo.late;document.getElementById('weekDetailTitle').textContent='第'+week+'周详情';document.getElementById('weekDetailContent').innerHTML='<div style="text-align:center;padding:24px;background:linear-gradient(135deg,#FFF0F3 0%,#FFF8FA 100%);border-radius:16px;margin-bottom:16px"><span style="font-size:80px;display:block;margin-bottom:12px">'+d.emoji+'</span><div style="font-size:20px;font-weight:700;color:var(--primary);margin-bottom:6px">'+d.size+'</div><div style="font-size:14px;color:var(--text2)">'+d.desc+'</div></div><div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">'+info.b.map(i=>'<li>'+i+'</li>').join('')+'</ul></div><div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">'+info.m.map(i=>'<li>'+i+'</li>').join('')+'</ul></div><div class="info-card"><h3><span>💡</span> 建议</h3><ul class="info-list">'+info.p.map(i=>'<li>'+i+'</li>').join('')+'</ul></div>';openModal('weekDetailModal')}
 
-// ======================== START ========================
+// ========== TODO ==========
+function initFilters(){document.querySelectorAll('.filter-btn').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');updateTodoList()}))}
+function updateTodoList(){const c=document.getElementById('todoList'),f=document.querySelector('.filter-btn.active').dataset.filter;let todos=appData.todos;if(f!=='all')todos=todos.filter(t=>t.stage===f);if(!todos.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无待办</div></div>';return}c.innerHTML=todos.map(t=>'<div class="todo-item" style="background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);cursor:pointer;transition:all .25s">'+(t.done?'<div class="todo-checkbox" style="width:24px;height:24px;border-radius:50%;background:var(--success);border:2px solid var(--success);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">✓</div>':'<div style="width:24px;height:24px;border:2px solid #E0E0E0;border-radius:50%;flex-shrink:0;margin-top:2px" class="todo-checkbox"></div>')+'<div style="flex:1;'+(t.done?'opacity:.5':'')+'"><div style="font-size:15px;font-weight:500;margin-bottom:6px;'+(t.done?'text-decoration:line-through;color:var(--text2)':'')+'">'+t.title+'</div><span style="padding:3px 10px;background:'+(t.stage==='early'?'#E8F5E9':t.stage==='mid'?'#FFF3E0':'#E3F2FD')+';color:'+(t.stage==='early'?'#4CAF50':t.stage==='mid'?'#FF9800':'#2196F3')+';font-size:11px;border-radius:10px;font-weight:500">'+(t.stage==='early'?'孕早期':t.stage==='mid'?'孕中期':'孕晚期')+'</span></div></div>').join('')}
+function toggleTodo(id){const t=appData.todos.find(x=>x.id===id);if(!t)return;t.done=!t.done;saveData();updateTodoList();updateHomePage();if(t.done)showConfetti()}
+function showAddTodoModal(){document.getElementById('todoText').value='';openModal('todoModal')}
+function addTodo(){const text=document.getElementById('todoText').value.trim(),stage=document.getElementById('todoStage').value;if(!text){showToast('请输入内容');return}appData.todos.push({id:Date.now(),title:text,stage,done:false});saveData();updateTodoList();closeModal('todoModal');showToast('✅ 已添加')}
 
-document.getElementById('startBtn').addEventListener('click',()=>{
-  const v = document.getElementById('lastPeriodDate').value;
-  if (!v) { showToast('请选择末次月经日期'); return; }
-  appData.lastPeriodDate = v;
-  appData.createdAt = new Date().toISOString();
-  if (!appData.todos || appData.todos.length === 0) appData.todos = JSON.parse(JSON.stringify(defaultTodos));
-  if (!appData.tips || appData.tips.length === 0) appData.tips = JSON.parse(JSON.stringify(tipsData));
-  saveData();
-  showMainContent();
-});
+// ========== DOCTOR ==========
+function initDocTabs(){document.querySelectorAll('.doc-tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.doc-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');updateDoctorList()}))}
+function updateDoctorList(){let docs=[...doctors];const cat=document.querySelector('.doc-tab.active').dataset.cat;if(cat==='high')docs=docs.filter(d=>d.cat==='high');else if(cat==='online')docs=docs.filter(d=>d.online);else if(cat==='video')docs=docs.filter(d=>d.id%2===0);document.getElementById('doctorList').innerHTML=docs.map(d=>'<div class="doc-card" onclick="openDoctorDetail('+d.id+')"><div class="doc-avatar">'+d.name[0]+'</div><div class="doc-status '+ (d.online?'online':'offline')+'">'+ (d.online?'● 在线':'离线')+'</div><div class="doc-info"><div class="doc-name">'+d.name+'</div><div class="doc-title">'+d.title+' · '+d.dept+'</div><div class="doc-hospital">🏥 '+d.hospital+'</div><div class="doc-tags">'+d.tags.map(t=>'<span class="doc-tag">'+t+'</span>').join('')+'</div><div class="doc-footer"><div class="doc-rating">★ '+d.rating+' ('+d.reviews+'评)</div><div class="doc-fee">¥'+d.fee+'<small>/次</small></div></div></div></div>').join('')}
+function openDoctorDetail(id){selectedDoctor=doctors.find(d=>d.id===id);if(!selectedDoctor)return;document.getElementById('doctorListView').style.display='none';document.getElementById('doctorDetailView').classList.add('active');renderDoctorDetail(selectedDoctor)}
+function closeDoctorDetail(){document.getElementById('doctorDetailView').classList.remove('active');document.getElementById('doctorListView').style.display='block';selectedDoctor=null;selectedDate=null;selectedTime=null}
+function renderDoctorDetail(d){const el=document.getElementById('doctorDetailContent');const today=new Date();let datesHtml='';for(let i=0;i<7;i++){const dt=new Date(today);dt.setDate(dt.getDate()+i);const dayKey=['sun','mon','tue','wed','thu','fri','sat'][dt.getDay()];datesHtml+='<div class="date-btn'+(i===0?' active':'')+'" data-day="'+dayKey+'" data-date="'+dt.toISOString().split('T')[0]+'" onclick="selectDate(this,\''+dayKey+'\',\''+dt.toISOString().split('T')[0]+'\')"><span class="dow">'+dayNames[dt.getDay()]+'</span><span class="dom">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</span></div>'}el.innerHTML='<div class="doc-detail-header"><div class="doc-detail-avatar">'+d.name[0]+'</div><div class="doc-detail-name">'+d.name+'</div><div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:'+(d.online?'#E8F5E9':'#F5F5F5')+';color:'+(d.online?'var(--success)':'var(--text3)')+';font-size:12px;border-radius:12px;font-weight:500">'+(d.online?'● 在线可接诊':'离线')+'</span><span style="display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:#FFF3E0;color:#FF9800;font-size:12px;border-radius:12px;font-weight:500">'+d.exp+'年经验</span></div><div class="doc-detail-title">'+d.title+' · '+d.dept+'</div><div class="doc-detail-hospital">🏥 '+d.hospital+'</div><div class="doc-detail-tags">'+d.tags.map(t=>'<span class="doc-tag" style="font-size:12px;padding:4px 12px">'+t+'</span>').join('')+'</div><div class="doc-detail-footer"><button class="btn btn-sm" style="width:auto;padding:12px 28px" onclick="openVideoBooking('+d.id+')">📹 视频问诊 ¥'+d.fee+'</button></div></div>'+
+'<div class="info-card"><h3><span>📄</span> 医生简介</h3><p style="font-size:14px;color:var(--text2);line-height:1.8">'+d.desc+'</p></div>'+
+'<div class="info-card"><h3><span>🔖</span> 执业信息</h3><p style="font-size:13px;color:var(--text2)">'+d.cert+'</p></div>'+
+'<div class="info-card"><h3><span>⭐</span> 患者评价</h3><div class="doc-detail-rating"><div class="r-item"><div class="r-num">'+d.rating+'</div><div class="r-label">综合评分</div></div><div class="r-item"><div class="r-num">'+d.reviews+'</div><div class="r-label">评价数</div></div><div class="r-item"><div class="r-num">'+d.exp+'年</div><div class="r-label">从业年限</div></div></div></div>'+
+'<div class="info-card schedule-section"><h3><span>📅</span> 排班表</h3><div class="schedule-date" id="scheduleDates">'+datesHtml+'</div><div id="timeSlots" style="margin-top:8px"></div></div>'+
+'<div style="display:flex;gap:12px;margin:20px 0"><button class="btn btn-success btn-sm" style="flex:1;padding:14px" onclick="bookAppointment('+d.id+')">🏥 预约挂号</button></div>'+
+'<div style="font-size:12px;color:var(--text3);text-align:center;padding:10px 0;border-top:1px solid #F0F0F0"><p>本平台医生信息仅供参考，不作为诊断和治疗直接依据</p><p style="margin-top:4px">如遇紧急情况请拨打 120</p></div>';setTimeout(()=>{const first=document.querySelector('.date-btn.active');if(first){const slotsEl=document.getElementById('timeSlots');showTimeSlots(first.dataset.day,slotsEl)}},50)}
+function selectDate(el,day,dateStr){document.querySelectorAll('.date-btn').forEach(x=>x.classList.remove('active'));el.classList.add('active');selectedDate=dateStr;selectedTime=null;const slotsEl=document.getElementById('timeSlots');slotsEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2)">加载中...</div>';showTimeSlots(day,slotsEl)}
+function showTimeSlots(day,el){if(!selectedDoctor){el.innerHTML='';return}const slots=selectedDoctor.schedule[day];if(!slots||!slots.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2);font-size:14px">该日无排班</div>';return}el.innerHTML='<div style="font-size:13px;color:var(--text2);margin-bottom:10px">选择时间段：</div><div class="time-slots">'+slots.map((s,i)=>'<div class="time-slot'+(s.f?'':' full')+'" onclick="'+(s.f?"selectTime(this,'"+s.t+"')":'')+'">'+(s.f? s.t.replace('-','~'):s.t.replace('-','~')+' 已满')+'</div>').join('')+'</div>';const firstAvail=document.querySelector('.time-slot:not(.full)');if(firstAvail)firstAvail.classList.add('active')}
+function selectTime(el,time){document.querySelectorAll('.time-slot').forEach(x=>x.classList.remove('active'));el.classList.add('active');selectedTime=time}
+function openVideoBooking(id){const d=doctors.find(x=>x.id===id);if(!d)return;document.getElementById('videoContent').innerHTML='<div class="info-card"><h3><span>📹</span> 视频问诊确认</h3><div style="padding:10px 0">'+
+'<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px"><div class="doc-avatar" style="width:50px;height:50px;font-size:22px">'+d.name[0]+'</div><div><div style="font-weight:600">'+d.name+' '+d.title+'</div><div style="font-size:13px;color:var(--text2)">'+d.hospital+'<br>'+d.dept+'</div></div></div>'+
+'<div class="booking-summary"><div class="booking-row"><span class="b-label">问诊方式</span><span class="b-value">📹 视频问诊（30分钟）</span></div><div class="booking-row"><span class="b-label">问诊费用</span><span class="b-value primary">¥'+d.fee+'</span></div></div>'+
+'<div style="display:flex;gap:12px;margin-top:20px"><button class="modal-btn cancel" style="flex:1" onclick="closeModal(\'videoModal\')">取消</button><button class="modal-btn confirm" style="flex:1" onclick="confirmVideo('+d.id+')">立即支付 ¥'+d.fee+'</button></div>'+
+'<div style="text-align:center;font-size:12px;color:var(--text3);margin-top:16px;line-height:1.6">⚠️ 如需选择具体时间段，请先预约挂号<br>视频问诊成功后将短信通知</div></div></div>';openModal('videoModal')}
+function confirmVideo(id){showConfetti();closeModal('videoModal');showToast('📹 视频问诊预约成功！稍后短信通知');
+  // 模拟支付
+  setTimeout(()=>showToast('✅ 已支付 ¥'+doctors.find(d=>d.id===id).fee),1000)}
+function bookAppointment(id){const d=doctors.find(x=>x.id===id);if(!d)return;const dateStr=selectedDate||new Date().toISOString().split('T')[0];const timeStr=selectedTime||(d.schedule.mon&&d.schedule.mon[0]?d.schedule.mon[0].t:'08:00-09:00');const fmtDate=new Date(dateStr).toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'});document.getElementById('bookingTitle').textContent='🏥 确认挂号';document.getElementById('bookingContent').innerHTML='<div class="info-card"><div style="display:flex;align-items:center;gap:16px;margin-bottom:16px"><div class="doc-avatar" style="width:50px;height:50px;font-size:22px">'+d.name[0]+'</div><div><div style="font-weight:600">'+d.name+' '+d.title+'</div><div style="font-size:13px;color:var(--text2)">'+d.hospital+' · '+d.dept+'</div></div></div><div class="booking-summary"><div class="booking-row"><span class="b-label">就诊日期</span><span class="b-value">'+fmtDate+'</span></div><div class="booking-row"><span class="b-label">就诊时间</span><span class="b-value">'+timeStr.replace('-','~')+'</span></div><div class="booking-row"><span class="b-label">就诊科室</span><span class="b-value">'+d.dept+'</span></div><div class="booking-row"><span class="b-label">挂号费用</span><span class="b-value primary">¥'+(d.fee+20)+'（含挂号费）</span></div></div><div class="modal-btns" style="margin-top:20px"><button class="modal-btn cancel" onclick="closeModal(\'bookingModal\')">取消</button><button class="modal-btn confirm" onclick="confirmBooking('+d.id+')">确认挂号</button></div></div>';document.getElementById('bookingTitle').textContent='🏥 确认挂号';openModal('bookingModal')}
+function confirmBooking(id){showConfetti();closeModal('bookingModal');const d=doctors.find(x=>x.id===id);showToast('🏥 挂号成功！已预约 '+d.name+' 医生');saveAppointmentToTodo(d)}
 
-function showMainContent() {
-  document.getElementById('setupContainer').classList.add('hidden');
-  document.getElementById('mainContent').classList.add('active');
-  document.getElementById('tabBar').style.display = 'flex';
-  updateHomePage();
-  updateTrackerPage();
-  updateTodoList();
-  updateHealthPage();
-  updateTipsPage();
-  showToast('🌸 欢迎使用怀孕助手！');
-}
+function saveAppointmentToTodo(d){const dateStr=selectedDate||'今天';const timeStr=selectedTime||'预约时间';const id=Date.now();appData.todos.push({id,title:'🏥 就诊：'+d.name+' · '+d.hospital,stage:getTri(calcWeek().week),done:false});saveData();updateTodoList();updateHomePage()}
 
-// ======================== TAB BAR ========================
+// ========== HEALTH ==========
+function updateHealthPage(){updateWeightRecords();updateBpRecords();updateCheckupList()}
+function updateWeightRecords(){const c=document.getElementById('weightRecords');if(!appData.weightRecords.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 记录</div></div>';document.getElementById('weightChart').innerHTML='';document.getElementById('weightChartLabels').innerHTML='';return}const recent=appData.weightRecords.slice(-5).reverse();c.innerHTML=recent.map(r=>'<div class="rec-item"><span class="rec-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="rec-val">'+r.value+' kg</span></div>').join('');updateWeightChart()}
+function updateWeightChart(){const chart=document.getElementById('weightChart'),lab=document.getElementById('weightChartLabels');if(appData.weightRecords.length<2){chart.innerHTML='';lab.innerHTML='';return}const recent=appData.weightRecords.slice(-7),vals=recent.map(r=>r.value),max=Math.max(...vals),min=Math.min(...vals),range=max-min||1;chart.innerHTML=recent.map((r,i)=>'<div class="chart-bar" style="height:'+(50+(r.value-min)/range*100)+'px;animation-delay:'+(i*0.08)+'s"></div>').join('');lab.innerHTML=recent.map(r=>'<span class="chart-label">'+(new Date(r.date).getMonth()+1)+'/'+new Date(r.date).getDate()+'</span>').join('')}
+function showWeightModal(){document.getElementById('weightValue').value='';openModal('weightModal')}
+function addWeight(){const v=parseFloat(document.getElementById('weightValue').value);if(isNaN(v)||v<=0){showToast('请输入有效体重');return}appData.weightRecords.push({date:new Date().toISOString(),value:v});saveData();updateWeightRecords();closeModal('weightModal');showToast('⚖️ 已保存')}
+function updateBpRecords(){const c=document.getElementById('bpRecords');if(!appData.bpRecords.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 记录</div></div>';return}const recent=appData.bpRecords.slice(-5).reverse();c.innerHTML=recent.map(r=>{let s='good',t='正常';if(r.high>=140||r.low>=90){s='danger';t='偏高'}else if(r.high<90||r.low<60){s='warning';t='偏低'}return'<div class="rec-item"><span class="rec-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="rec-val '+s+'">'+r.high+'/'+r.low+' '+t+'</span></div>'}).join('')}
+function showBpModal(){document.getElementById('bpHigh').value='';document.getElementById('bpLow').value='';openModal('bpModal')}
+function addBp(){const h=parseInt(document.getElementById('bpHigh').value),l=parseInt(document.getElementById('bpLow').value);if(isNaN(h)||isNaN(l)||h<=0||l<=0){showToast('请输入有效血压');return}appData.bpRecords.push({date:new Date().toISOString(),high:h,low:l});saveData();updateBpRecords();closeModal('bpModal');showToast('❤️ 已保存')}
+function updateCheckupList(){const w=calcWeek(),c=document.getElementById('checkupList');c.innerHTML=checkupSchedule.map(item=>{const wk=item.w,num=parseInt(wk);let label='孕'+wk+'周',status='';if(wk.includes('-'))label='孕'+wk+'周';if(!isNaN(num)&&w.week>num+2)status='<span style="color:var(--success);font-weight:500">✓ 已过</span>';else if(!isNaN(num)&&w.week>=num-1&&w.week<=num+1)status='<span style="color:var(--primary);font-weight:500">● 当前</span>';else if(wk.includes('-')){const[s,e]=wk.split('-').map(Number);if(!isNaN(s)&&!isNaN(e)&&w.week>=s&&w.week<=e)status='<span style="color:var(--primary);font-weight:500">● 当前</span>'}return'<div class="rec-item"><div><div style="font-size:14px;font-weight:600">'+item.n+'</div><div class="rec-date">'+label+' · '+item.d+'</div></div>'+status+'</div>'}).
 
-function initTabBar() {
-  document.querySelectorAll('.tab-item').forEach(tab=>{
-    tab.addEventListener('click',()=> switchTab(tab.dataset.tab));
-  });
-}
-function switchTab(tabName) {
-  currentTab = tabName;
-  document.querySelectorAll('.tab-item').forEach(t=>t.classList.toggle('active', t.dataset.tab===tabName));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const page = document.getElementById(tabName+'Page');
-  if (page) { page.classList.add('active'); page.scrollIntoView({behavior:'smooth',block:'start'}); }
-  window.scrollTo({top:0,behavior:'smooth'});
-}
 
-// ======================== WEEK INFO ========================
 
-function calculateWeekInfo() {
-  const last = new Date(appData.lastPeriodDate);
-  const today = new Date();
-  const diffDays = Math.max(0, Math.floor((today-last)/(1000*60*60*24)));
-  const week = Math.min(Math.max(Math.floor(diffDays/7)+1, 1), 40);
-  const edd = new Date(last); edd.setDate(edd.getDate()+280);
-  const eddStr = edd.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
-  const daysLeft = Math.max(0, 280-diffDays);
-  return {week, edd:eddStr, daysLeft};
-}
-function getTrimesterLabel(w) { return w<=13?'孕早期':w<=28?'孕中期':'孕晚期'; }
-function getTrimesterKey(w) { return w<=13?'early':w<=28?'mid':'late'; }
 
-// ======================== HOME ========================
 
-function updateHomePage() {
-  if (!appData.lastPeriodDate) return;
-  const wi = calculateWeekInfo(), week = wi.week; selectedWeek = week;
-  const d = babyData[week]||babyData[40];
-  document.getElementById('babyEmoji').textContent = d.emoji;
-  document.getElementById('babySizeText').textContent = '本周像'+d.size;
-  document.getElementById('babySizeDesc').textContent = d.desc;
+join('')}
 
-  const pct = Math.min(week/40*100,100);
-  const circ = 2*Math.PI*50;
-  document.getElementById('progressRing').style.strokeDashoffset = circ - pct/100*circ;
-  document.getElementById('currentWeek').textContent = '第'+week+'周';
-  document.querySelector('.progress-week-label').textContent = getTrimesterLabel(week);
-  document.getElementById('eddDate').textContent = wi.edd;
-  document.getElementById('daysLeft').textContent = wi.daysLeft+'天';
-  updateInfoLists(week);
-}
-function updateInfoLists(week) {
-  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
-  document.getElementById('babyDevList').innerHTML = info.babyChanges.map(i=>'<li>'+i+'</li>').join('');
-  document.getElementById('momChangesList').innerHTML = info.momChanges.map(i=>'<li>'+i+'</li>').join('');
-  document.getElementById('weekTipsList').innerHTML = info.tips.map(i=>'<li>'+i+'</li>').join('');
-}
+// ========== TIPS ==========
+function updateTipsPage(){document.getElementById('tipsList').innerHTML=appData.tips.map(t=>'<div class="tip-card" onclick="toggleLike('+t.id+')"><div class="tip-cat"><span>🏷️</span> '+t.c+'</div><div class="tip-title">'+t.t+'</div><div class="tip-content">'+t.c+'</div><div class="tip-footer"><span class="tip-date">'+(t.l?'❤️ 已收藏':'')+'</span><div class="tip-like'+(t.l?' liked':'')+'"><span>'+(t.l?'❤️':'🤍')+'</span><span>'+(t.l?'已收藏':'收藏')+'</span></div></div></div>').join('')}
+function toggleLike(id){const t=appData.tips.find(x=>x.id===id);if(!t)return;t.l=!t.l;saveData();updateTipsPage()}
 
-// ======================== TRACKER ========================
+// ========== TOAST ==========
+function showToast(msg){const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2500)}
 
-function updateTrackerPage() {
-  const wi = calculateWeekInfo();
-  const today = new Date();
-  document.getElementById('trackerDate').textContent = '今天是' + today.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('trackerEdd').textContent = '预产期：'+wi.edd;
-  const pct = Math.min(wi.week/40*100,100);
-  document.getElementById('trackerProgressFill').style.width = pct+'%';
-  document.getElementById('trackerProgressText').textContent = '孕期已完成 '+Math.round(pct)+'%';
+// ========== CONFETTI ==========
+function showConfetti(){const colors=['#FF6B9D','#FFB6C1','#FFA07A','#FFD700','#00B894','#74B9FF','#A29BFE','#FD79A8'];const c=document.createElement('div');c.className='confetti-container';document.body.appendChild(c);for(let i=0;i<40;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'%';p.style.top='-10px';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.width=(6+Math.random()*8)+'px';p.style.height=(6+Math.random()*8)+'px';p.style.borderRadius=Math.random()>.5?'50%':'2px';p.style.animationDuration=(1.5+Math.random()*2)+'s';p.style.animationDelay=Math.random()*.5+'s';p.style.transform='rotate('+Math.random()*360+'deg)';c.appendChild(p)}setTimeout(()=>c.remove(),4000)}
 
-  const sel = document.getElementById('weekSelector'); sel.innerHTML = '';
-  for (let i=1;i<=40;i++) {
-    const btn = document.createElement('button');
-    btn.className = 'week-btn'+(i===wi.week?' active':'');
-    btn.textContent = '第'+i+'周';
-    btn.addEventListener('click',()=>showWeekDetail(i));
-    sel.appendChild(btn);
-  }
-  showWeekDetail(wi.week);
-}
-function showWeekDetail(week) {
-  selectedWeek = week;
-  document.querySelectorAll('.week-btn').forEach((b,i)=>b.classList.toggle('active',i+1===week));
-  const d = babyData[week]||babyData[40];
-  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
-  document.getElementById('weekDetail').innerHTML = `
-    <div class="baby-size-card" style="cursor:pointer" onclick="showWeekDetailModal(${week})">
-      <span class="baby-emoji">${d.emoji}</span>
-      <div class="baby-size-text">本周像${d.size}</div>
-      <div class="baby-size-desc">${d.desc}</div>
-    </div>
-    <div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">${info.babyChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
-    <div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">${info.momChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
-    <div class="info-card"><h3><span>💡</span> 温馨提醒</h3><ul class="info-list">${info.tips.map(i=>'<li>'+i+'</li>').join('')}</ul></div>`;
-}
-function showWeekDetailModal(week) {
-  const d = babyData[week]||babyData[40];
-  const info = week<=13?pregnancyInfo.early:week<=28?pregnancyInfo.mid:pregnancyInfo.late;
-  document.getElementById('weekDetailTitle').textContent = '第'+week+'周详情';
-  document.getElementById('weekDetailContent').innerHTML = `
-    <div class="week-detail-header"><span class="week-detail-emoji">${d.emoji}</span><div class="week-detail-title">${d.size}</div><div class="week-detail-subtitle">${d.desc}</div></div>
-    <div class="info-card"><h3><span>👶</span> 胎儿发育</h3><ul class="info-list">${info.babyChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
-    <div class="info-card"><h3><span>💕</span> 妈妈变化</h3><ul class="info-list">${info.momChanges.map(i=>'<li>'+i+'</li>').join('')}</ul></div>
-    <div class="info-card"><h3><span>💡</span> 温馨提醒</h3><ul class="info-list">${info.tips.map(i=>'<li>'+i+'</li>').join('')}</ul></div>`;
-  openModal('weekDetailModal');
-}
-
-// ======================== TODO ========================
-
-function updateTodoList() {
-  const c = document.getElementById('todoList');
-  const filt = document.querySelector('.filter-btn.active').dataset.filter;
-  let todos = appData.todos;
-  if(filt!=='all') todos = todos.filter(t=>t.stage===filt);
-  if(todos.length===0){
-    c.innerHTML='<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无待办事项</div></div>';
-    return;
-  }
-  c.innerHTML = todos.map(t=>`
-    <div class="todo-item${t.done?' done':''}" onclick="toggleTodo(${t.id})">
-      <div class="todo-checkbox">${t.done?'✓':''}</div>
-      <div class="todo-content">
-        <div class="todo-text">${t.title}</div>
-        <div class="todo-meta"><span class="todo-tag ${t.stage}">${t.stage==='early'?'孕早期':t.stage==='mid'?'孕中期':'孕晚期'}</span></div>
-      </div>
-    </div>`).join('');
-}
-function toggleTodo(id) {
-  const t = appData.todos.find(x=>x.id===id);
-  if(!t) return;
-  t.done = !t.done; saveData(); updateTodoList();
-  if(t.done) showConfetti();
-}
-function initFilterBtns() {
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active'); updateTodoList();
-    });
-  });
-}
-function showAddTodoModal() { document.getElementById('todoText').value=''; openModal('todoModal'); }
-function addTodo() {
-  const text = document.getElementById('todoText').value.trim();
-  const stage = document.getElementById('todoStage').value;
-  if(!text){ showToast('请输入待办事项内容'); return; }
-  appData.todos.push({id:Date.now(),title:text,stage,done:false});
-  saveData(); updateTodoList(); closeModal('todoModal'); showToast('✅ 已添加待办事项');
-}
-
-// ======================== HEALTH ========================
-
-function updateHealthPage() { updateWeightRecords(); updateBpRecords(); updateCheckupList(); }
-
-function updateWeightRecords() {
-  const c = document.getElementById('weightRecords');
-  if(appData.weightRecords.length===0){
-    c.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">点击 + 添加第一条体重记录</div></div>';
-    document.getElementById('weightChart').innerHTML=''; document.getElementById('weightChartLabels').innerHTML='';
-    return;
-  }
-  const recent = appData.weightRecords.slice(-5).reverse();
-  c.innerHTML = recent.map(r=>'<div class="record-item"><span class="record-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="record-value">'+r.value+' kg</span></div>').join('');
-  updateWeightChart();
-}
-function updateWeightChart() {
-  const chart = document.getElementById('weightChart'), labels = document.getElementById('weightChartLabels');
-  if(appData.weightRecords.length<2){ chart.innerHTML=''; labels.innerHTML=''; return; }
-  const recent = appData.weightRecords.slice(-7), vals = recent.map(r=>r.value);
-  const max = Math.max(...vals), min = Math.min(...vals), range = max-min||1;
-  chart.innerHTML = recent.map((r,i)=>'<div class="chart-bar" style="height:'+(50+(r.value-min)/range*100)+'px;animation-delay:'+(i*0.08)+'s"></div>').join('');
-  labels.innerHTML = recent.map(r=>'<span class="chart-label">'+(new Date(r.date).getMonth()+1)+'/'+new Date(r.date).getDate()+'</span>').join('');
-}
-function showWeightModal(){ document.getElementById('weightValue').value=''; openModal('weightModal'); }
-function addWeight(){
-  const v = parseFloat(document.getElementById('weightValue').value);
-  if(isNaN(v)||v<=0){ showToast('请输入有效的体重值'); return; }
-  appData.weightRecords.push({date:new Date().toISOString(),value:v});
-  saveData(); updateWeightRecords(); closeModal('weightModal'); showToast('⚖️ 体重记录已保存');
-}
-
-function updateBpRecords() {
-  const c = document.getElementById('bpRecords');
-  if(appData.bpRecords.length===0){
-    c.innerHTML='<div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-text">点击 + 添加第一条血压记录</div></div>';
-    return;
-  }
-  const recent = appData.bpRecords.slice(-5).reverse();
-  c.innerHTML = recent.map(r=>{
-    let status='good',text='正常';
-    if(r.high>=140||r.low>=90){ status='danger'; text='偏高'; }
-    else if(r.high<90||r.low<60){ status='warning'; text='偏低'; }
-    return '<div class="record-item"><span class="record-date">'+new Date(r.date).toLocaleDateString('zh-CN')+'</span><span class="record-value '+status+'">'+r.high+'/'+r.low+' '+text+'</span></div>';
-  }).join('');
-}
-function showBpModal(){ document.getElementById('bpHigh').value=''; document.getElementById('bpLow').value=''; openModal('bpModal'); }
-function addBp(){
-  const h=parseInt(document.getElementById('bpHigh').value), l=parseInt(document.getElementById('bpLow').value);
-  if(isNaN(h)||isNaN(l)||h<=0||l<=0){ showToast('请输入有效的血压值'); return; }
-  appData.bpRecords.push({date:new Date().toISOString(),high:h,low:l});
-  saveData(); updateBpRecords(); closeModal('bpModal'); showToast('❤️ 血压记录已保存');
-}
-
-function updateCheckupList() {
-  const wi = calculateWeekInfo(), c = document.getElementById('checkupList');
-  c.innerHTML = checkupSchedule.map(item=>{
-    const wk = item.week;
-    const numWeeks = parseInt(wk);
-    let label = '孕'+wk+'周';
-    if (wk.includes('-')) label = '孕'+wk+'周';
-    let status = '';
-    if (!isNaN(numWeeks) && wi.week > numWeeks+2) status = '<span style="color:var(--success);font-weight:500">✓ 已完成</span>';
-    else if (!isNaN(numWeeks) && wi.week >= numWeeks-1 && wi.week <= numWeeks+1) status = '<span style="color:var(--primary);font-weight:500">● 即将到来</span>';
-    else if (wk.includes('-')) {
-      const [s,e] = wk.split('-').map(Number);
-      if (!isNaN(s) && !isNaN(e) && wi.week >= s && wi.week <= e) status = '<span style="color:var(--primary);font-weight:500">● 正在进行</span>';
-    }
-    return '<div class="record-item"><div><div class="record-value" style="font-size:14px;font-weight:600">'+item.name+'</div><div class="record-date">'+label+' · '+item.desc+'</div></div><div>'+status+'</div></div>';
-  }).join('');
-}
-
-// ======================== TIPS ========================
-
-function updateTipsPage() {
-  document.getElementById('tipsList').innerHTML = appData.tips.map(t=>`
-    <div class="tip-card" onclick="toggleLike(${t.id})">
-      <div class="tip-category"><span>🏷️</span> ${t.category}</div>
-      <div class="tip-title">${t.title}</div>
-      <div class="tip-content">${t.content}</div>
-      <div class="tip-footer">
-        <div class="tip-date"></div>
-        <div class="tip-like${t.liked?' liked':''}"><span>${t.liked?'❤️':'🤍'}</span><span>${t.liked?'已收藏':'收藏'}</span></div>
-      </div>
-    </div>`).join('');
-}
-function toggleLike(id) {
-  const t = appData.tips.find(x=>x.id===id);
-  if(!t) return;
-  t.liked=!t.liked; saveData(); updateTipsPage();
-}
-
-// ======================== TOAST ========================
-
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(el._timer);
-  el._timer = setTimeout(()=>el.classList.remove('show'), 2500);
-}
-
-// ======================== CONFETTI ========================
-
-function showConfetti() {
-  const colors = ['#FF6B9D','#FFB6C1','#FFA07A','#FFD700','#00B894','#74B9FF','#A29BFE','#FD79A8'];
-  const container = document.createElement('div');
-  container.className = 'confetti-container';
-  document.body.appendChild(container);
-  for (let i=0;i<40;i++){
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = Math.random()*100+'%';
-    piece.style.top = '-10px';
-    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
-    piece.style.width = (6+Math.random()*8)+'px';
-    piece.style.height = (6+Math.random()*8)+'px';
-    piece.style.borderRadius = Math.random()>0.5?'50%':'2px';
-    piece.style.animationDuration = (1.5+Math.random()*2)+'s';
-    piece.style.animationDelay = Math.random()*0.5+'s';
-    piece.style.transform = 'rotate('+Math.random()*360+'deg)';
-    container.appendChild(piece);
-  }
-  // 动态添加 CSS keyframes
-  const style = document.createElement('style');
-  style.textContent = '@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(0.3)}}';
-  document.head.appendChild(style);
-  setTimeout(()=>{ container.remove(); style.remove(); }, 4000);
-}
-
-// ======================== MODALS ========================
-
-function openModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('active');
-  // auto-focus
-  const input = el.querySelector('.modal-input');
-  if (input) setTimeout(()=>input.focus(), 350);
-}
-function closeModal(id) {
-  document.getElementById(id)?.classList.remove('active');
-}
-document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('active'); });
-});
-
-// Keyboard: Enter to submit, Escape to close
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
-  }
-  if(e.key==='Enter'){
-    const active = document.querySelector('.modal-overlay.active');
-    if(!active) return;
-    const confirmBtn = active.querySelector('.modal-btn.confirm');
-    if(confirmBtn && (document.activeElement?.classList.contains('modal-input') || document.activeElement?.tagName==='SELECT')) {
-      confirmBtn.click();
-    }
-  }
-});
+// ========== MODALS ==========
+function openModal(id){const el=document.getElementById(id);if(!el)return;el.classList.add('active');const inp=el.querySelector('.modal-input');if(inp)setTimeout(()=>inp.focus(),350)}
+function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active')}))
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));if(e.key==='Enter'){const a=document.querySelector('.modal-overlay.active');if(!a)return;const b=a.querySelector('.modal-btn.confirm');if(b&&(document.activeElement?.classList.contains('modal-input')||document.activeElement?.tagName==='SELECT'))b.click()}})
 </script>
 </body>
 </html>
